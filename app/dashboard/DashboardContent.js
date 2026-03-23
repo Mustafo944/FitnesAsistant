@@ -154,14 +154,29 @@ export default function DashboardContent() {
       </Card>
 
       {/* Tezkor tugmalar 2x2 grid */}
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-2 gap-4">
         {quickActions.map((action) => (
           <Link key={action.href} href={action.href}>
-            <Card glass className={`border bg-gradient-to-br ${action.color} hover:scale-[1.02] transition-transform cursor-pointer h-full`}>
-              <div className="text-2xl mb-2">{action.icon}</div>
-              <p className="text-sm font-semibold text-white">{action.label}</p>
-              <p className="text-[11px] text-gray-400 mt-0.5">{action.desc}</p>
-            </Card>
+            <div className="group relative h-full">
+              {/* Neon Glow Outward */}
+              <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${action.color.split(' ')[1]} opacity-0 group-hover:opacity-40 blur-xl transition-opacity animate-pulse`} />
+              
+              <Card glass className={`relative h-full border ${action.color.split(' ')[2]} bg-gradient-to-br ${action.color.split(' ')[0]} ${action.color.split(' ')[1]} hover:scale-[1.02] transition-all cursor-pointer overflow-hidden rounded-2xl`}>
+                {/* Shine effect */}
+                <div className="absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[-25deg] group-hover:left-[100%] transition-all duration-700" />
+                
+                <div className="relative z-10 p-1">
+                  <div className="text-3xl mb-3 flex items-center justify-center w-12 h-12 rounded-xl bg-white/5 backdrop-blur-md group-hover:scale-110 transition-transform">
+                    {action.icon}
+                  </div>
+                  <p className="text-sm font-bold text-white tracking-tight">{action.label}</p>
+                  <p className="text-[10px] text-gray-400 mt-1 leading-tight font-light">{action.desc}</p>
+                </div>
+
+                {/* Neon Border */}
+                <div className={`absolute inset-0 border border-white/5 rounded-2xl group-hover:border-violet-500/30 transition-colors`} />
+              </Card>
+            </div>
           </Link>
         ))}
       </div>
