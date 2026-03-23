@@ -2,18 +2,18 @@ import LoginButton from '@/components/auth/LoginButton'
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-[#020205]">
-      {/* Premium Galaxy Background */}
+    <main className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-[#030008]">
+      {/* Exact Nebula Background Simulation */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[#020205]" />
+        <div className="absolute inset-0 bg-[#030008]" />
         
-        {/* Nebula Clouds */}
-        <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-purple-900/20 blur-[150px] rounded-full animate-pulse" />
-        <div className="absolute bottom-[-20%] right-[-10%] w-[70%] h-[70%] bg-blue-900/20 blur-[150px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
+        {/* Extremely Bright Nebula Clouds */}
+        <div className="absolute top-[-15%] left-[-5%] w-[60%] h-[60%] bg-purple-600/30 blur-[130px] rounded-full" />
+        <div className="absolute bottom-[0%] right-[-10%] w-[70%] h-[50%] bg-blue-600/25 blur-[130px] rounded-full" />
         
-        {/* Light Arcs from the image */}
-        <div className="absolute top-[15%] left-[10%] w-[40%] h-[1px] bg-gradient-to-r from-transparent via-purple-500/40 to-transparent rotate-[-15deg] blur-sm" />
-        <div className="absolute bottom-[25%] right-[10%] w-[50%] h-[1px] bg-gradient-to-r from-transparent via-blue-500/40 to-transparent rotate-[25deg] blur-sm" />
+        {/* Bright Flare arcs */}
+        <div className="absolute top-[10%] left-[5%] w-[45%] h-[2px] bg-gradient-to-r from-transparent via-purple-400 to-transparent rotate-[-12deg] blur-[2px] opacity-60" />
+        <div className="absolute bottom-[20%] right-[-10%] w-[60%] h-[2px] bg-gradient-to-r from-transparent via-blue-400 to-transparent rotate-[20deg] blur-[2px] opacity-50" />
 
         {/* Stars */}
         <div className="stars absolute inset-0 opacity-40 scale-125" />

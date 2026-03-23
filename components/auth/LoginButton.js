@@ -20,45 +20,46 @@ export default function LoginButton() {
     <button
       onClick={handleLogin}
       disabled={loading}
-      className="relative flex items-center justify-center gap-4 px-10 py-5 bg-transparent text-white font-semibold rounded-[20px] transition-all hover:scale-[1.02] active:scale-95 group overflow-hidden border border-white/5 shadow-2xl"
+      className="relative flex items-center justify-center gap-4 px-12 py-5 bg-transparent text-white font-bold rounded-full transition-all hover:scale-[1.05] active:scale-95 group overflow-hidden"
     >
-      {/* Button Background & Gradient Border */}
-      <div className="absolute inset-0 bg-gradient-to-r from-[#ff00e6]/20 via-[#7d26cd]/20 to-[#007aff]/20 opacity-40 group-hover:opacity-60 transition-opacity" />
-      <div className="absolute inset-0 bg-[#0c0c14]/80 backdrop-blur-xl rounded-[19px] z-10" />
-      
-      {/* Glowing Neon Border */}
-      <div className="absolute inset-0 p-[2px] rounded-[20px] bg-gradient-to-r from-[#ff00e6] via-[#7d26cd] to-[#007aff] z-0 opacity-80 group-hover:opacity-100 transition-opacity shadow-[0_0_20px_rgba(125,38,205,0.4)]" />
+      {/* Button Glow Shadow (Outward) */}
+      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#ff00e6] via-[#7d26cd] to-[#007aff] opacity-50 blur-xl group-hover:opacity-100 transition-opacity" />
 
-      {/* Internal shine effect */}
-      <div className="absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-[-25deg] group-hover:left-[100%] transition-all duration-700 z-10" />
+      {/* Glass Background */}
+      <div className="absolute inset-[2px] bg-[#0c0c14]/90 backdrop-blur-3xl rounded-full z-10" />
+      
+      {/* Precise Neon Border (2px) */}
+      <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#ff00c8] via-[#8b5cf6] to-[#3b82f6] z-0 p-[2.5px]">
+        <div className="w-full h-full bg-transparent rounded-full" />
+      </div>
 
       <div className="relative z-20 flex items-center gap-4">
         {loading ? (
           <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
         ) : (
-          <div className="p-2 bg-white/10 rounded-lg backdrop-blur-md">
-            <svg className="w-6 h-6 text-white" viewBox="0 0 24 24">
-              <path
-                fill="currentColor"
-                d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
-              />
-              <path
-                fill="currentColor"
-                d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-              />
-              <path
-                fill="currentColor"
-                d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-              />
-              <path
-                fill="currentColor"
-                d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-              />
-            </svg>
-          </div>
+          <svg className="w-7 h-7" viewBox="0 0 24 24">
+            <path
+              fill="currentColor"
+              d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
+            />
+            <path
+              fill="currentColor"
+              d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+            />
+            <path
+              fill="currentColor"
+              d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+            />
+            <path
+              fill="currentColor"
+              d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+            />
+          </svg>
         )}
-        <span className="text-xl font-medium tracking-wide">Google orqali kirish</span>
+        <span className="text-xl font-semibold tracking-wide">Google orqali kirish</span>
       </div>
     </button>
+  )
+}
   )
 }
