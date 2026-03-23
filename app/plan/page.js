@@ -6,6 +6,8 @@ import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
 import EmptyState from '@/components/ui/EmptyState'
+import WorkoutPlan from '@/components/dashboard/WorkoutPlan'
+import DietTips from '@/components/dashboard/DietTips'
 
 export default function PlanPage() {
   const [loading, setLoading] = useState(false)

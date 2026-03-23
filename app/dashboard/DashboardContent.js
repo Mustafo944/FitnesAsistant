@@ -94,9 +94,9 @@ export default function DashboardContent() {
     <PageWrapper className="max-w-2xl mx-auto py-10 px-4 pb-24">
       {/* Header: Natijalar */}
       <div className="text-center mb-10 relative">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 mb-4 animate-bounce">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 mb-4 transition-transform">
           <span className="text-[10px] font-bold text-violet-400 uppercase tracking-widest flex items-center gap-1.5">
-            <span className="w-1 h-1 rounded-full bg-violet-400 animate-ping" />
+            <span className="w-1 h-1 rounded-full bg-violet-400" />
             Tahlil yakunlandi
           </span>
         </div>
@@ -108,7 +108,7 @@ export default function DashboardContent() {
         </p>
       </div>
 
-      <div className="space-y-6">
+      <div className="space-y-8">
         {/* 1. Umumiy xulosa */}
         <SummaryCard summary={aiTip || "Foydalanuvchi tana holati yaxshi, yog' miqdori me'yoridan biroz yuqori. Ozish uchun eng yaxshi yo'l - yog'ni kamaytirish + mushak massasini oshirish."} />
 
@@ -118,64 +118,13 @@ export default function DashboardContent() {
           <CalorieCard calories={{ maintenance: tdee, fat_loss: tdee - 500 }} />
         </div>
 
-        {/* 3. Kuchli tomonlar va Yaxshilash kerak (Mock data to match image) */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <Card glass neon="green" className="border-emerald-500/20 bg-emerald-500/5">
-             <div className="flex items-center gap-2 mb-3">
-               <span className="text-xl">💪</span>
-               <h3 className="text-sm font-bold text-white uppercase tracking-wider">Kuchli tomonlar</h3>
-             </div>
-             <ul className="space-y-2">
-               <li className="flex items-center gap-2 text-xs text-gray-400 font-light">
-                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                 Jidiy intilish va o&apos;zgarishga tayyorlik mavjud
-               </li>
-               <li className="flex items-center gap-2 text-xs text-gray-400 font-light">
-                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                 Bazalanish qobiliyati yaxshi darajada
-               </li>
-             </ul>
-          </Card>
-
-          <Card glass neon="orange" className="border-orange-500/20 bg-orange-500/5">
-             <div className="flex items-center gap-2 mb-3">
-               <span className="text-xl">⚠️</span>
-               <h3 className="text-sm font-bold text-white uppercase tracking-wider">Yaxshilash kerak</h3>
-             </div>
-             <ul className="space-y-2">
-               <li className="flex items-center gap-2 text-xs text-gray-400 font-light">
-                 <div className="w-1.5 h-1.5 rounded-full bg-orange-400" />
-                 Tana yog&apos; foizini sekin-asta kamaytirish
-               </li>
-               <li className="flex items-center gap-2 text-xs text-gray-400 font-light">
-                 <div className="w-1.5 h-1.5 rounded-full bg-orange-400" />
-                 Protein iste&apos;molini biroz ko&apos;paytirish
-               </li>
-             </ul>
-          </Card>
-        </div>
-
-        {/* 4. Mashq rejasi */}
-        <WorkoutPlan workouts={[
-          { title: 'Kardio', frequency: '30 daqiqa' },
-          { title: 'Kuch mashqlari', frequency: '45 daqiqa' },
-        ]} />
-
-        {/* 5. Ovqatlanish tavsiyalari */}
-        <DietTips tips={[
-          "Protein ga boy ovqatlar iste'mol qiling",
-          "Sabzavotlar va mevalarni ko'paytiring",
-          "Shakarni butunlay kamaytiring"
-        ]} />
-
-        {/* Tezkor tugmalar Grid - Moved to bottom for navigation if needed, or kept for functionality */}
+        {/* Quick Navigate to Details */}
         <div className="pt-10 border-t border-white/5">
-          <h3 className="text-gray-500 text-[10px] font-bold uppercase tracking-widest text-center mb-6">Tezkor amallar</h3>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {quickActions.map((action) => (
               <Link key={action.href} href={action.href}>
                 <div className="group relative h-full">
-                  <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${action.color.split(' ')[1]} opacity-0 group-hover:opacity-40 blur-xl transition-opacity animate-pulse`} />
+                  <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${action.color.split(' ')[1]} opacity-0 group-hover:opacity-40 blur-xl transition-opacity`} />
                   <Card glass className={`relative h-full flex flex-col items-center justify-center p-4 border ${action.color.split(' ')[2]} bg-gradient-to-br ${action.color.split(' ')[0]} ${action.color.split(' ')[1]} hover:scale-[1.05] transition-all cursor-pointer overflow-hidden rounded-2xl`}>
                     <div className="text-2xl mb-2">{action.icon}</div>
                     <p className="text-[10px] font-bold text-white uppercase tracking-tighter">{action.label}</p>
