@@ -16,7 +16,7 @@ export default function Card({ children, className = '', glass = false, neon = '
 
   return (
     <div className="perspective-1000">
-      <div className={`${base} ${style} ${className} hover:-translate-y-2 hover:rotate-x-1 hover:rotate-y-1 transform-gpu`}>
+      <div className={`${base} ${style} ${className} transform-gpu`}>
         {children}
       </div>
     </div>
