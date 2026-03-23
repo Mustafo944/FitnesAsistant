@@ -1,0 +1,15 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/api/analyze/route": "/api/analyze",
+  "/api/history/route": "/api/history",
+  "/api/profile/route": "/api/profile",
+  "/api/upload/route": "/api/upload",
+  "/auth/callback/route": "/auth/callback",
+  "/dashboard/page": "/dashboard",
+  "/favicon.ico/route": "/favicon.ico",
+  "/history/page": "/history",
+  "/onboarding/page": "/onboarding",
+  "/page": "/",
+  "/upload/page": "/upload"
+}
