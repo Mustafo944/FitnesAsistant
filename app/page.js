@@ -8,8 +8,8 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[#030008]" />
         
         {/* Extremely Bright Nebula Clouds */}
-        <div className="absolute top-[-15%] left-[-5%] w-[60%] h-[60%] bg-purple-600/30 blur-[130px] rounded-full" />
-        <div className="absolute bottom-[0%] right-[-10%] w-[70%] h-[50%] bg-blue-600/25 blur-[130px] rounded-full" />
+        <div className="absolute top-[-10%] left-[-5%] w-[70%] h-[70%] bg-purple-600/40 blur-[130px] rounded-full" />
+        <div className="absolute bottom-[0%] right-[-10%] w-[80%] h-[60%] bg-blue-600/35 blur-[130px] rounded-full" />
         
         {/* Bright Flare arcs */}
         <div className="absolute top-[10%] left-[5%] w-[45%] h-[2px] bg-gradient-to-r from-transparent via-purple-400 to-transparent rotate-[-12deg] blur-[2px] opacity-60" />
