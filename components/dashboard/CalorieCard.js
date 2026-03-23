@@ -4,24 +4,36 @@ export default function CalorieCard({ calories }) {
   if (!calories) return null
 
   return (
-    <Card glass>
-      <h3 className="text-lg font-semibold text-white mb-3">
-        Kunlik kaloriya
-      </h3>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white/5 rounded-2xl p-4 text-center">
-          <p className="text-xs text-gray-400 mb-1">Ushlab turish</p>
-          <p className="text-2xl font-bold text-white">
-            {calories.maintenance}
-          </p>
-          <p className="text-xs text-gray-500">kkal/kun</p>
+    <Card neon="blue">
+      <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider mb-4">Kunlik kaloriya</h3>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+        {/* Maintenance */}
+        <div className="bg-white/5 rounded-2xl p-4 border border-white/5 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400">
+              <span className="text-xl">💧</span>
+            </div>
+            <div>
+              <p className="text-[10px] text-gray-500 font-bold uppercase">Ushlab turish</p>
+              <p className="text-xl font-bold text-blue-400">{calories.maintenance}</p>
+            </div>
+          </div>
+          <span className="text-[10px] text-gray-600 font-bold">kkal/kun</span>
         </div>
-        <div className="bg-violet-500/10 rounded-2xl p-4 text-center border border-violet-500/20">
-          <p className="text-xs text-violet-400 mb-1">Ozish uchun</p>
-          <p className="text-2xl font-bold text-violet-300">
-            {calories.fat_loss}
-          </p>
-          <p className="text-xs text-violet-400/60">kkal/kun</p>
+
+        {/* Fat Loss */}
+        <div className="bg-pink-500/5 rounded-2xl p-4 border border-pink-500/10 flex items-center justify-between shadow-[inset_0_0_15px_rgba(244,114,182,0.05)]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center text-pink-400">
+              <span className="text-xl">🔥</span>
+            </div>
+            <div>
+              <p className="text-[10px] text-pink-400/60 font-bold uppercase">Ozish uchun</p>
+              <p className="text-xl font-bold text-pink-400">{calories.fat_loss}</p>
+            </div>
+          </div>
+          <span className="text-[10px] text-pink-400/40 font-bold">kkal/kun</span>
         </div>
       </div>
     </Card>

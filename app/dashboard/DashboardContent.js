@@ -5,6 +5,11 @@ import Link from 'next/link'
 import PageWrapper from '@/components/layout/PageWrapper'
 import Card from '@/components/ui/Card'
 import Spinner from '@/components/ui/Spinner'
+import SummaryCard from '@/components/dashboard/SummaryCard'
+import BmiCard from '@/components/dashboard/BmiCard'
+import CalorieCard from '@/components/dashboard/CalorieCard'
+import WorkoutPlan from '@/components/dashboard/WorkoutPlan'
+import DietTips from '@/components/dashboard/DietTips'
 
 export default function DashboardContent() {
   const [profile, setProfile] = useState(null)
@@ -86,99 +91,100 @@ export default function DashboardContent() {
   ]
 
   return (
-    <PageWrapper className="max-w-lg mx-auto py-6 px-4">
-      {/* Salomlashish */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white">
-          Salom, {displayName}! 👋
+    <PageWrapper className="max-w-2xl mx-auto py-10 px-4 pb-24">
+      {/* Header: Natijalar */}
+      <div className="text-center mb-10 relative">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 mb-4 animate-bounce">
+          <span className="text-[10px] font-bold text-violet-400 uppercase tracking-widest flex items-center gap-1.5">
+            <span className="w-1 h-1 rounded-full bg-violet-400 animate-ping" />
+            Tahlil yakunlandi
+          </span>
+        </div>
+        <h1 className="text-4xl font-extrabold text-white tracking-tight mb-2">
+          Natijalar
         </h1>
-        <p className="text-gray-400 text-sm mt-1">Bugungi holatingiz</p>
+        <p className="text-gray-500 text-sm font-medium tracking-[0.2em] uppercase">
+          {new Date().getFullYear()} · {new Date().toLocaleDateString('uz-UZ', { month: 'long', day: 'numeric' })}
+        </p>
       </div>
 
-      {/* BMI va Kaloriya */}
-      <div className="grid grid-cols-2 gap-3 mb-4">
-        {/* BMI */}
-        <Card glass className={`text-center border-white/5 shadow-lg ${bmiGlow}`}>
-          <p className="text-gray-400 text-xs font-medium mb-1">BMI</p>
-          <p className={`text-3xl font-bold ${bmiColor}`}>{bmi}</p>
-          <p className={`text-xs mt-1 ${bmiColor} opacity-80`}>{bmiStatus}</p>
-        </Card>
+      <div className="space-y-6">
+        {/* 1. Umumiy xulosa */}
+        <SummaryCard summary={aiTip || "Foydalanuvchi tana holati yaxshi, yog' miqdori me'yoridan biroz yuqori. Ozish uchun eng yaxshi yo'l - yog'ni kamaytirish + mushak massasini oshirish."} />
 
-        {/* Kaloriya */}
-        <Card glass className="text-center border-white/5 shadow-lg shadow-violet-500/10">
-          <p className="text-gray-400 text-xs font-medium mb-1">Kunlik kaloriya</p>
-          <p className="text-3xl font-bold text-violet-400">{tdee}</p>
-          <p className="text-xs mt-1 text-gray-500">kkal/kun</p>
-        </Card>
-      </div>
-
-      {/* AI Kundalik Maslahat */}
-      <Card glass className="mb-4 border-violet-500/10 bg-gradient-to-br from-violet-600/5 to-transparent">
-        <div className="flex items-start gap-3">
-          <div className="w-8 h-8 rounded-lg bg-violet-500/20 flex items-center justify-center shrink-0 mt-0.5">
-            <span className="text-sm">💡</span>
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium text-violet-400 mb-1">AI Kunlik Maslahat</p>
-            {tipLoading ? (
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 border border-violet-400/50 border-t-violet-400 rounded-full animate-spin" />
-                <span className="text-xs text-gray-500">Yuklanmoqda...</span>
-              </div>
-            ) : (
-              <p className="text-sm text-gray-300 leading-relaxed">{aiTip || 'Har kuni kamida 8 stakan suv iching!'}</p>
-            )}
-          </div>
+        {/* 2. BMI va Kaloriya Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <BmiCard bmi={{ value: bmi, category: bmiStatus }} />
+          <CalorieCard calories={{ maintenance: tdee, fat_loss: tdee - 500 }} />
         </div>
-      </Card>
 
-      {/* Profil holati */}
-      <Card glass className="mb-4 border-white/5">
-        <div className="grid grid-cols-3 divide-x divide-white/5">
-          <div className="text-center px-2">
-            <p className="text-xs text-gray-500">Bo&apos;y</p>
-            <p className="text-lg font-semibold text-white">{profile.height_cm || '—'}</p>
-            <p className="text-[10px] text-gray-500">sm</p>
-          </div>
-          <div className="text-center px-2">
-            <p className="text-xs text-gray-500">Vazn</p>
-            <p className="text-lg font-semibold text-white">{profile.weight_kg || '—'}</p>
-            <p className="text-[10px] text-gray-500">kg</p>
-          </div>
-          <div className="text-center px-2">
-            <p className="text-xs text-gray-500">Yosh</p>
-            <p className="text-lg font-semibold text-white">{profile.age || '—'}</p>
-            <p className="text-[10px] text-gray-500">yil</p>
-          </div>
+        {/* 3. Kuchli tomonlar va Yaxshilash kerak (Mock data to match image) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card glass neon="green" className="border-emerald-500/20 bg-emerald-500/5">
+             <div className="flex items-center gap-2 mb-3">
+               <span className="text-xl">💪</span>
+               <h3 className="text-sm font-bold text-white uppercase tracking-wider">Kuchli tomonlar</h3>
+             </div>
+             <ul className="space-y-2">
+               <li className="flex items-center gap-2 text-xs text-gray-400 font-light">
+                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                 Jidiy intilish va o&apos;zgarishga tayyorlik mavjud
+               </li>
+               <li className="flex items-center gap-2 text-xs text-gray-400 font-light">
+                 <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                 Bazalanish qobiliyati yaxshi darajada
+               </li>
+             </ul>
+          </Card>
+
+          <Card glass neon="orange" className="border-orange-500/20 bg-orange-500/5">
+             <div className="flex items-center gap-2 mb-3">
+               <span className="text-xl">⚠️</span>
+               <h3 className="text-sm font-bold text-white uppercase tracking-wider">Yaxshilash kerak</h3>
+             </div>
+             <ul className="space-y-2">
+               <li className="flex items-center gap-2 text-xs text-gray-400 font-light">
+                 <div className="w-1.5 h-1.5 rounded-full bg-orange-400" />
+                 Tana yog&apos; foizini sekin-asta kamaytirish
+               </li>
+               <li className="flex items-center gap-2 text-xs text-gray-400 font-light">
+                 <div className="w-1.5 h-1.5 rounded-full bg-orange-400" />
+                 Protein iste&apos;molini biroz ko&apos;paytirish
+               </li>
+             </ul>
+          </Card>
         </div>
-      </Card>
 
-      {/* Tezkor tugmalar 2x2 grid */}
-      <div className="grid grid-cols-2 gap-4">
-        {quickActions.map((action) => (
-          <Link key={action.href} href={action.href}>
-            <div className="group relative h-full">
-              {/* Neon Glow Outward */}
-              <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${action.color.split(' ')[1]} opacity-0 group-hover:opacity-40 blur-xl transition-opacity animate-pulse`} />
-              
-              <Card glass className={`relative h-full border ${action.color.split(' ')[2]} bg-gradient-to-br ${action.color.split(' ')[0]} ${action.color.split(' ')[1]} hover:scale-[1.02] transition-all cursor-pointer overflow-hidden rounded-2xl`}>
-                {/* Shine effect */}
-                <div className="absolute top-0 left-[-100%] w-full h-full bg-gradient-to-r from-transparent via-white/5 to-transparent skew-x-[-25deg] group-hover:left-[100%] transition-all duration-700" />
-                
-                <div className="relative z-10 p-1">
-                  <div className="text-3xl mb-3 flex items-center justify-center w-12 h-12 rounded-xl bg-white/5 backdrop-blur-md group-hover:scale-110 transition-transform">
-                    {action.icon}
-                  </div>
-                  <p className="text-sm font-bold text-white tracking-tight">{action.label}</p>
-                  <p className="text-[10px] text-gray-400 mt-1 leading-tight font-light">{action.desc}</p>
+        {/* 4. Mashq rejasi */}
+        <WorkoutPlan workouts={[
+          { title: 'Kardio', frequency: '30 daqiqa' },
+          { title: 'Kuch mashqlari', frequency: '45 daqiqa' },
+        ]} />
+
+        {/* 5. Ovqatlanish tavsiyalari */}
+        <DietTips tips={[
+          "Protein ga boy ovqatlar iste'mol qiling",
+          "Sabzavotlar va mevalarni ko'paytiring",
+          "Shakarni butunlay kamaytiring"
+        ]} />
+
+        {/* Tezkor tugmalar Grid - Moved to bottom for navigation if needed, or kept for functionality */}
+        <div className="pt-10 border-t border-white/5">
+          <h3 className="text-gray-500 text-[10px] font-bold uppercase tracking-widest text-center mb-6">Tezkor amallar</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {quickActions.map((action) => (
+              <Link key={action.href} href={action.href}>
+                <div className="group relative h-full">
+                  <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${action.color.split(' ')[1]} opacity-0 group-hover:opacity-40 blur-xl transition-opacity animate-pulse`} />
+                  <Card glass className={`relative h-full flex flex-col items-center justify-center p-4 border ${action.color.split(' ')[2]} bg-gradient-to-br ${action.color.split(' ')[0]} ${action.color.split(' ')[1]} hover:scale-[1.05] transition-all cursor-pointer overflow-hidden rounded-2xl`}>
+                    <div className="text-2xl mb-2">{action.icon}</div>
+                    <p className="text-[10px] font-bold text-white uppercase tracking-tighter">{action.label}</p>
+                  </Card>
                 </div>
-
-                {/* Neon Border */}
-                <div className={`absolute inset-0 border border-white/5 rounded-2xl group-hover:border-violet-500/30 transition-colors`} />
-              </Card>
-            </div>
-          </Link>
-        ))}
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
     </PageWrapper>
   )

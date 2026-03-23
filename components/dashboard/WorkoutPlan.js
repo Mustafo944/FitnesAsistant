@@ -4,29 +4,29 @@ export default function WorkoutPlan({ workouts }) {
   if (!workouts?.length) return null
 
   return (
-    <Card glass>
-      <h3 className="text-lg font-semibold text-white mb-4">
-        💪 Mashq rejasi
-      </h3>
-      <div className="space-y-3">
+    <Card neon="purple" className="relative group">
+      <div className="flex gap-4">
+        <div className="shrink-0 w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 border border-indigo-500/20">
+          <span className="text-2xl">🏋️</span>
+        </div>
+        <div>
+          <h3 className="text-xl font-bold text-white tracking-tight">Mashq rejasi</h3>
+          <p className="text-xs text-gray-500">Haftasiga 4-5 kun • Yog&apos; yoqish + Mushakni mustahkamlash</p>
+        </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2 mt-6">
         {workouts.map((workout, i) => (
-          <div
-            key={i}
-            className="bg-white/5 rounded-2xl p-4 border border-white/5 hover:border-violet-500/20 transition-colors"
-          >
-            <div className="flex items-start justify-between gap-3">
-              <div className="flex-1">
-                <h4 className="font-medium text-white">{workout.title}</h4>
-                <p className="text-sm text-gray-400 mt-1">
-                  {workout.description}
-                </p>
-              </div>
-              <span className="text-xs text-violet-400 bg-violet-500/10 px-3 py-1 rounded-full whitespace-nowrap">
-                {workout.frequency}
-              </span>
-            </div>
+          <div key={i} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-500/5 border border-indigo-500/10 text-[10px] font-bold text-indigo-300 uppercase tracking-tighter">
+            <span className="opacity-60 text-xs">⚡</span>
+            {workout.title} ({workout.frequency})
           </div>
         ))}
+        {/* Decorative Pill Badge from image */}
+        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-purple-500/5 border border-purple-500/10 text-[10px] font-bold text-purple-300 uppercase tracking-tighter">
+          <span className="opacity-60 text-xs">🧘</span>
+          Core & Stretching
+        </div>
       </div>
     </Card>
   )
