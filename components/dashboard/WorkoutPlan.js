@@ -4,9 +4,9 @@ export default function WorkoutPlan({ workouts }) {
   if (!workouts?.length) return null
 
   return (
-    <Card neon="purple" className="relative group">
+    <Card neon="purple" className="relative group/card">
       <div className="flex gap-4">
-        <div className="shrink-0 w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 border border-indigo-500/20">
+        <div className="shrink-0 w-12 h-12 rounded-2xl bg-indigo-500/10 flex items-center justify-center text-indigo-400 border border-indigo-500/30 shadow-[0_0_20px_rgba(99,102,241,0.4)] icon-neon-blue group-hover/card:scale-110 transition-transform duration-500">
           <span className="text-2xl">🏋️</span>
         </div>
         <div>

@@ -13,8 +13,8 @@ export default function SummaryCard({ summary }) {
     <Card neon="purple" className="relative overflow-hidden">
       <div className="flex flex-col md:flex-row gap-6">
         {/* Glow Icon */}
-        <div className="shrink-0 w-24 h-24 rounded-[32px] bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-[0_0_30px_rgba(168,85,247,0.4)] border border-white/20">
-          <div className="text-4xl filter drop-shadow-[0_0_10px_rgba(255,255,255,0.5)]">✨</div>
+        <div className="shrink-0 w-24 h-24 rounded-[32px] bg-gradient-to-br from-purple-500 to-indigo-600 flex items-center justify-center shadow-[0_0_35px_rgba(168,85,247,0.5)] border border-white/20 transition-transform group-hover/card:scale-110 duration-500">
+          <div className="text-4xl filter drop-shadow-[0_0_15px_rgba(255,255,255,0.7)] icon-neon-purple">✨</div>
         </div>
 
         <div className="flex-1">

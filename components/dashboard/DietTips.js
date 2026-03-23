@@ -4,11 +4,11 @@ export default function DietTips({ tips }) {
   if (!tips?.length) return null
 
   return (
-    <Card neon="orange" className="relative group overflow-hidden">
+    <Card neon="orange" className="relative group/card overflow-hidden">
       <div className="flex flex-col md:flex-row gap-6">
         <div className="flex-1">
           <div className="flex gap-4 mb-6">
-            <div className="shrink-0 w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-400 border border-orange-500/20">
+            <div className="shrink-0 w-12 h-12 rounded-2xl bg-orange-500/10 flex items-center justify-center text-orange-400 border border-orange-500/30 shadow-[0_0_20px_rgba(249,115,22,0.4)] icon-neon-orange group-hover/card:scale-110 transition-transform duration-500">
               <span className="text-2xl">🍎</span>
             </div>
             <div>

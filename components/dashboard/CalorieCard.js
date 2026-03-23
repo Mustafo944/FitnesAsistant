@@ -9,9 +9,9 @@ export default function CalorieCard({ calories }) {
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {/* Maintenance */}
-        <div className="bg-white/5 rounded-2xl p-4 border border-white/5 flex items-center justify-between">
+        <div className="bg-white/5 rounded-2xl p-4 border border-white/5 flex items-center justify-between group/item">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400">
+            <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 border border-blue-500/20 shadow-[0_0_15px_rgba(59,130,246,0.3)] icon-neon-blue group-hover/item:scale-110 transition-transform">
               <span className="text-xl">💧</span>
             </div>
             <div>
@@ -23,9 +23,9 @@ export default function CalorieCard({ calories }) {
         </div>
 
         {/* Fat Loss */}
-        <div className="bg-pink-500/5 rounded-2xl p-4 border border-pink-500/10 flex items-center justify-between shadow-[inset_0_0_15px_rgba(244,114,182,0.05)]">
+        <div className="bg-pink-500/5 rounded-2xl p-4 border border-pink-500/10 flex items-center justify-between shadow-[inset_0_0_15px_rgba(244,114,182,0.05)] group/item">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center text-pink-400">
+            <div className="w-10 h-10 rounded-xl bg-pink-500/10 flex items-center justify-center text-pink-400 border border-pink-500/20 shadow-[0_0_15px_rgba(244,114,182,0.3)] icon-neon-purple group-hover/item:scale-110 transition-transform">
               <span className="text-xl">🔥</span>
             </div>
             <div>
