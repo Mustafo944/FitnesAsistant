@@ -2,13 +2,21 @@ import LoginButton from '@/components/auth/LoginButton'
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-[#050505]">
-      {/* Galaxy/Nebula Background */}
+    <main className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-[#020205]">
+      {/* Premium Galaxy Background */}
       <div className="absolute inset-0 z-0">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(76,29,149,0.15),transparent_70%)]" />
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-violet-600/10 blur-[120px] rounded-full" />
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-indigo-600/10 blur-[120px] rounded-full" />
-        <div className="stars absolute inset-0 opacity-30" />
+        <div className="absolute inset-0 bg-[#020205]" />
+        
+        {/* Nebula Clouds */}
+        <div className="absolute top-[-20%] left-[-10%] w-[70%] h-[70%] bg-purple-900/20 blur-[150px] rounded-full animate-pulse" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[70%] h-[70%] bg-blue-900/20 blur-[150px] rounded-full animate-pulse" style={{ animationDelay: '2s' }} />
+        
+        {/* Light Arcs from the image */}
+        <div className="absolute top-[15%] left-[10%] w-[40%] h-[1px] bg-gradient-to-r from-transparent via-purple-500/40 to-transparent rotate-[-15deg] blur-sm" />
+        <div className="absolute bottom-[25%] right-[10%] w-[50%] h-[1px] bg-gradient-to-r from-transparent via-blue-500/40 to-transparent rotate-[25deg] blur-sm" />
+
+        {/* Stars */}
+        <div className="stars absolute inset-0 opacity-40 scale-125" />
       </div>
 
       <div className="relative z-10 text-center max-w-2xl px-6 py-12">
