@@ -69,7 +69,7 @@ export default function BottomNav() {
   if (pathname === '/' || pathname === '/onboarding' || !user) return null
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#030008]/95 backdrop-blur-xl border-t border-white/5 pb-safe">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/[0.03] backdrop-blur-[30px] border-t border-white/10 pb-safe shadow-[0_-4px_30px_rgba(0,0,0,0.1)]">
       <div className="max-w-5xl mx-auto flex justify-around items-center h-16">
         {tabs.map((tab) => {
           const isActive = pathname === tab.href || (tab.href !== '/dashboard' && pathname.startsWith(tab.href))

@@ -43,7 +43,7 @@ export default function Navbar() {
   const avatarUrl = user?.user_metadata?.avatar_url
 
   return (
-    <nav className="sticky top-0 z-50 bg-[#030008]/90 backdrop-blur-xl border-b border-white/5">
+    <nav className="sticky top-0 z-50 bg-white/[0.03] backdrop-blur-[20px] border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
       <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
         {/* Chap: Avatar + Ism */}
         <div className="flex items-center gap-3">
