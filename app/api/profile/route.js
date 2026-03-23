@@ -31,13 +31,15 @@ export async function POST(request) {
   }
 
   const body = await request.json()
-  const { height_cm, weight_kg, age, gender } = body
+  const { height_cm, weight_kg, age, gender, goal, activity_level } = body
 
   const validation = validateProfileData({
     height: height_cm,
     weight: weight_kg,
     age,
     gender,
+    goal,
+    activity_level,
   })
 
   if (!validation.valid) {
@@ -54,6 +56,8 @@ export async function POST(request) {
       weight_kg,
       age,
       gender,
+      goal: goal || 'forma_saqlash',
+      activity_level: activity_level || 'o_rtacha',
       onboarded: true,
       updated_at: new Date().toISOString(),
     })

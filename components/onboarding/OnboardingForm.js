@@ -8,7 +8,7 @@ import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
 import { saveProfile } from '@/services/profile'
 import { validateProfileData } from '@/lib/validation'
-import { GENDER_OPTIONS } from '@/lib/constants'
+import { GENDER_OPTIONS, GOAL_OPTIONS, ACTIVITY_OPTIONS } from '@/lib/constants'
 
 export default function OnboardingForm() {
   const router = useRouter()
@@ -19,6 +19,8 @@ export default function OnboardingForm() {
     weight: '',
     age: '',
     gender: '',
+    goal: 'forma_saqlash',
+    activity_level: 'o_rtacha',
   })
 
   const handleChange = (e) => {
@@ -43,6 +45,8 @@ export default function OnboardingForm() {
         weight_kg: Number(form.weight),
         age: Number(form.age),
         gender: form.gender,
+        goal: form.goal,
+        activity_level: form.activity_level,
       })
       router.push('/upload')
     } catch (err) {
@@ -104,6 +108,24 @@ export default function OnboardingForm() {
           value={form.gender}
           onChange={handleChange}
           options={GENDER_OPTIONS}
+          required
+        />
+
+        <Select
+          label="Sizning maqsadingiz"
+          name="goal"
+          value={form.goal}
+          onChange={handleChange}
+          options={GOAL_OPTIONS}
+          required
+        />
+
+        <Select
+          label="Faollik darajangiz"
+          name="activity_level"
+          value={form.activity_level}
+          onChange={handleChange}
+          options={ACTIVITY_OPTIONS}
           required
         />
 

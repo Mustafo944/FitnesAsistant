@@ -28,7 +28,9 @@ export default function Navbar() {
 
   const navLinks = [
     { href: '/dashboard', label: 'Boshqaruv' },
+    { href: '/plan', label: 'Haftalik Reja' },
     { href: '/upload', label: 'Tahlil' },
+    { href: '/chat', label: 'Asistant' },
     { href: '/history', label: 'Tarix' },
   ]
 

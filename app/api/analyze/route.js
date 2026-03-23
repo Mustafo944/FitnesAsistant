@@ -20,7 +20,7 @@ export async function POST(request) {
   // Profil ma'lumotlarini olish
   const { data: profile, error: profileError } = await supabase
     .from('profiles')
-    .select('height_cm, weight_kg, age, gender')
+    .select('height_cm, weight_kg, age, gender, goal, activity_level')
     .eq('id', user.id)
     .single()
 
@@ -46,6 +46,8 @@ export async function POST(request) {
       weight: profile.weight_kg,
       age: profile.age,
       gender: profile.gender,
+      goal: profile.goal,
+      activity_level: profile.activity_level,
     })
 
     // Hisoblangan qiymatlarni qo'shish/to'g'rilash

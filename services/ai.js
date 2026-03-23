@@ -3,10 +3,11 @@ import { GoogleGenAI } from '@google/genai'
 const genai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
 
 const SYSTEM_PROMPT = `Sen professional fitness mutaxassisi va dietologsan. 
-Foydalanuvchi rasmini va tana ma'lumotlarini tahlil qil.
+Foydalanuvrchi rasmini, tana holatini, shaxsiy maqsadini (ozish/semirish) va jismoniy faolligini inobatga olib chuqur tahlil qil.
+Maqsadiga erishish uchun eng yaxshi, ilmiy asoslangan va aniq maslahatlar ber.
 Javobni FAQAT qat'iy JSON formatida ber, boshqa hech narsa qo'shma.
 Barcha matnlarni o'zbek tilida yoz.
-Tibbiy tashxis qo'yma, faqat umumiy maslahatlar ber.
+Tibbiy tashxis qo'yma, faqat umumiy va sportga oid maslahatlar ber.
 
 JSON tuzilishi:
 {
@@ -27,8 +28,10 @@ export async function analyzeWithGemini(imageBase64, mimeType, metrics) {
 - Vazn: ${metrics.weight} kg
 - Yosh: ${metrics.age}
 - Jins: ${metrics.gender === 'male' ? 'Erkak' : 'Ayol'}
+- Maqsad: ${metrics.goal || "Forma saqlash"}
+- Faollik darajasi: ${metrics.activity_level || "O'rtacha"}
 
-Ushbu rasmni va ma'lumotlarni tahlil qilib, JSON formatida natija ber.`
+Ushbu rasmni va ma'lumotlarni tahlil qilib, foydalanuvchining MAQSADINI hisobga olgan holda JSON formatida natija ber.`
 
   const result = await genai.models.generateContent({
     model: 'gemini-2.5-flash',
@@ -52,6 +55,62 @@ Ushbu rasmni va ma'lumotlarni tahlil qilib, JSON formatida natija ber.`
   const text = result.text
   
   // JSON ni ajratib olish
+  const jsonMatch = text.match(/\{[\s\S]*\}/)
+  if (!jsonMatch) {
+    throw new Error("AI javobidan JSON ajratib bo'lmadi")
+  }
+
+  return JSON.parse(jsonMatch[0])
+}
+
+export async function generatePlanWithGemini(metrics) {
+  const PLAN_SYSTEM_PROMPT = `Sen professional fitness mutaxassisi va dietologsan.
+Foydalanuvchining tana ko'rsatkichlari, maqsadi va faollik darajasiga qarab 7 kunlik mukammal dieta va mashg'ulot rejasini tuzib ber.
+Javobni FAQAT qat'iy JSON formatida ber. Boshqa hech qanday so'z qo'shma.
+
+JSON tuzilishi:
+{
+  "weekly_goal": "Haftalik maqsad va motivatsiya qisqacha",
+  "daily_calories": 2500,
+  "macros": { "protein": "150g", "carbs": "250g", "fats": "70g" },
+  "plan": [
+    {
+      "day": 1,
+      "meals": [
+        { "type": "Ertuslik", "food": "Suli bo'tqasi va tuxum", "calories": 400 }
+      ],
+      "workout": {
+        "title": "Ko'krak va Triceps",
+        "exercises": ["Jyimlyoja 4x10", "Gantel ko'tarish 3x12"]
+      }
+    }
+  ]
+}`
+
+  const userPrompt = `Foydalanuvchi ma'lumotlari:
+- Bo'y: ${metrics.height} sm
+- Vazn: ${metrics.weight} kg
+- Yosh: ${metrics.age}
+- Jins: ${metrics.gender === 'male' ? 'Erkak' : 'Ayol'}
+- Maqsad: ${metrics.goal || "Forma saqlash"}
+- Faollik darajasi: ${metrics.activity_level || "O'rtacha"}
+
+Yuqoridagi ma'lumotlarga asoslanib 7 kunlik reja tayyorla.`
+
+  const result = await genai.models.generateContent({
+    model: 'gemini-2.5-flash',
+    contents: [
+      {
+        role: 'user',
+        parts: [
+          { text: PLAN_SYSTEM_PROMPT },
+          { text: userPrompt },
+        ],
+      },
+    ],
+  })
+
+  const text = result.text
   const jsonMatch = text.match(/\{[\s\S]*\}/)
   if (!jsonMatch) {
     throw new Error("AI javobidan JSON ajratib bo'lmadi")
