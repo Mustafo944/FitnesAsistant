@@ -20,7 +20,7 @@ export default function LoginButton() {
     <button
       onClick={handleLogin}
       disabled={loading}
-      className="relative flex items-center justify-center gap-4 px-12 py-5 bg-transparent text-white font-bold rounded-full transition-all hover:scale-[1.05] active:scale-95 group overflow-hidden"
+      className="relative flex items-center justify-center gap-3 px-8 py-3.5 md:px-10 md:py-4 bg-transparent text-white font-bold rounded-full transition-all hover:scale-[1.05] active:scale-95 group overflow-hidden"
     >
       {/* Button Glow Shadow (Outward) */}
       <div className="absolute inset-0 rounded-full bg-gradient-to-r from-[#ff00e6] via-[#7d26cd] to-[#007aff] opacity-50 blur-xl group-hover:opacity-100 transition-opacity" />
@@ -37,7 +37,7 @@ export default function LoginButton() {
         {loading ? (
           <div className="w-6 h-6 border-2 border-white/30 border-t-white rounded-full animate-spin" />
         ) : (
-          <svg className="w-7 h-7" viewBox="0 0 24 24">
+          <svg className="w-5 h-5 md:w-6 md:h-6" viewBox="0 0 24 24">
             <path
               fill="currentColor"
               d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
@@ -56,7 +56,7 @@ export default function LoginButton() {
             />
           </svg>
         )}
-        <span className="text-xl font-semibold tracking-wide">Google orqali kirish</span>
+        <span className="text-base md:text-lg font-semibold tracking-wide">Google orqali kirish</span>
       </div>
     </button>
   )
