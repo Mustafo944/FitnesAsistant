@@ -1,167 +1,169 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 import PageWrapper from '@/components/layout/PageWrapper'
-import SummaryCard from '@/components/dashboard/SummaryCard'
-import BmiCard from '@/components/dashboard/BmiCard'
-import CalorieCard from '@/components/dashboard/CalorieCard'
-import WorkoutPlan from '@/components/dashboard/WorkoutPlan'
-import DietTips from '@/components/dashboard/DietTips'
 import Card from '@/components/ui/Card'
-import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
-import EmptyState from '@/components/ui/EmptyState'
 
 export default function DashboardContent() {
-  const searchParams = useSearchParams()
-  const analysisId = searchParams.get('id')
-  const [data, setData] = useState(null)
+  const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  const [aiTip, setAiTip] = useState('')
+  const [tipLoading, setTipLoading] = useState(false)
 
   useEffect(() => {
-    async function fetchData() {
-      try {
-        const url = analysisId
-          ? `/api/history?id=${analysisId}`
-          : '/api/history?latest=true'
-        const res = await fetch(url)
+    fetch('/api/profile')
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (data) setProfile(data)
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false))
+  }, [])
 
-        if (!res.ok) {
-          if (res.status === 404) {
-            setData(null)
-            return
-          }
-          throw new Error("Ma'lumot olishda xatolik")
-        }
-
-        setData(await res.json())
-      } catch (err) {
-        setError(err.message)
-      } finally {
-        setLoading(false)
-      }
+  // AI kundalik maslahat olish
+  useEffect(() => {
+    if (profile) {
+      setTipLoading(true)
+      fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: 'Menga bugun uchun bitta qisqa (1-2 gap) fitnes yoki sog\'liq maslahati ber. Har safar yangisini ayt.',
+          history: []
+        })
+      })
+        .then(res => res.ok ? res.json() : null)
+        .then(data => { if (data?.reply) setAiTip(data.reply) })
+        .catch(() => setAiTip('Har kuni kamida 2 litr suv iching va 30 daqiqa yuring.'))
+        .finally(() => setTipLoading(false))
     }
-
-    fetchData()
-  }, [analysisId])
+  }, [profile])
 
   if (loading) {
     return (
-      <PageWrapper className="flex items-center justify-center">
+      <PageWrapper className="flex items-center justify-center min-h-[60vh]">
         <Spinner size="lg" />
       </PageWrapper>
     )
   }
 
-  if (error) {
+  if (!profile) {
     return (
-      <PageWrapper className="flex items-center justify-center">
-        <EmptyState icon="⚠️" title="Xatolik" description={error}>
-          <Button onClick={() => window.location.reload()}>
-            Qayta urinish
-          </Button>
-        </EmptyState>
-      </PageWrapper>
-    )
-  }
-
-  if (!data) {
-    return (
-      <PageWrapper className="flex items-center justify-center">
-        <EmptyState
-          icon="🏋️"
-          title="Hali tahlil qilinmagan"
-          description="Birinchi tahlilni boshlash uchun rasm yuklang"
-        >
-          <Link href="/upload">
-            <Button>Tahlilni boshlash</Button>
+      <PageWrapper className="flex items-center justify-center min-h-[60vh]">
+        <div className="text-center">
+          <p className="text-gray-400 mb-4">Profil topilmadi</p>
+          <Link href="/onboarding" className="text-violet-400 underline">
+            Profilni to&apos;ldirish
           </Link>
-        </EmptyState>
+        </div>
       </PageWrapper>
     )
   }
 
-  const result = data.result || {}
+  // BMI hisoblash
+  const heightM = (profile.height_cm || 170) / 100
+  const bmi = ((profile.weight_kg || 70) / (heightM * heightM)).toFixed(1)
+  const bmiStatus = bmi < 18.5 ? 'Kam vazn' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Ortiqcha' : 'Semirib ketgan'
+  const bmiColor = bmi < 18.5 ? 'text-blue-400' : bmi < 25 ? 'text-green-400' : bmi < 30 ? 'text-yellow-400' : 'text-red-400'
+  const bmiGlow = bmi < 18.5 ? 'shadow-blue-500/20' : bmi < 25 ? 'shadow-green-500/20' : bmi < 30 ? 'shadow-yellow-500/20' : 'shadow-red-500/20'
+
+  // Kaloriya
+  const bmr = profile.gender === 'male'
+    ? 10 * (profile.weight_kg || 70) + 6.25 * (profile.height_cm || 170) - 5 * (profile.age || 25) + 5
+    : 10 * (profile.weight_kg || 70) + 6.25 * (profile.height_cm || 170) - 5 * (profile.age || 25) - 161
+  const activityMultiplier = { passiv: 1.2, yengil: 1.375, o_rtacha: 1.55, faol: 1.725 }
+  const tdee = Math.round(bmr * (activityMultiplier[profile.activity_level] || 1.55))
+
+  const displayName = profile.first_name || profile.full_name?.split(' ')[0] || 'Foydalanuvchi'
+
+  const quickActions = [
+    { href: '/upload', icon: '📷', label: 'Rasm Tahlil', desc: 'Tana holatini tahlil', color: 'from-violet-600/20 to-purple-600/20 border-violet-500/20' },
+    { href: '/plan', icon: '📋', label: 'Haftalik Reja', desc: 'Dieta va mashqlar', color: 'from-blue-600/20 to-cyan-600/20 border-blue-500/20' },
+    { href: '/chat', icon: '🤖', label: 'AI Maslahat', desc: 'Savollar bering', color: 'from-green-600/20 to-emerald-600/20 border-green-500/20' },
+    { href: '/history', icon: '📊', label: 'Tarix', desc: 'Barcha natijalar', color: 'from-orange-600/20 to-amber-600/20 border-orange-500/20' },
+  ]
 
   return (
-    <PageWrapper>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-white">Natijalaringiz</h1>
-        <p className="text-gray-400 mt-1">
-          {new Date(data.created_at).toLocaleDateString('uz-UZ', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </p>
+    <PageWrapper className="max-w-lg mx-auto py-6 px-4">
+      {/* Salomlashish */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-white">
+          Salom, {displayName}! 👋
+        </h1>
+        <p className="text-gray-400 text-sm mt-1">Bugungi holatingiz</p>
       </div>
 
-      <div className="space-y-6">
-        <SummaryCard summary={result.summary} />
+      {/* BMI va Kaloriya */}
+      <div className="grid grid-cols-2 gap-3 mb-4">
+        {/* BMI */}
+        <Card glass className={`text-center border-white/5 shadow-lg ${bmiGlow}`}>
+          <p className="text-gray-400 text-xs font-medium mb-1">BMI</p>
+          <p className={`text-3xl font-bold ${bmiColor}`}>{bmi}</p>
+          <p className={`text-xs mt-1 ${bmiColor} opacity-80`}>{bmiStatus}</p>
+        </Card>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          <BmiCard bmi={result.bmi} />
-          <CalorieCard calories={result.estimated_calories} />
-        </div>
+        {/* Kaloriya */}
+        <Card glass className="text-center border-white/5 shadow-lg shadow-violet-500/10">
+          <p className="text-gray-400 text-xs font-medium mb-1">Kunlik kaloriya</p>
+          <p className="text-3xl font-bold text-violet-400">{tdee}</p>
+          <p className="text-xs mt-1 text-gray-500">kkal/kun</p>
+        </Card>
+      </div>
 
-        {(result.strengths?.length > 0 || result.improvement_areas?.length > 0) && (
-          <div className="grid md:grid-cols-2 gap-6">
-            {result.strengths?.length > 0 && (
-              <Card glass>
-                <h3 className="text-lg font-semibold text-white mb-3">
-                  ✅ Kuchli tomonlar
-                </h3>
-                <ul className="space-y-2">
-                  {result.strengths.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
-                      <span className="text-green-400 mt-0.5">•</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </Card>
-            )}
-
-            {result.improvement_areas?.length > 0 && (
-              <Card glass>
-                <h3 className="text-lg font-semibold text-white mb-3">
-                  📈 Yaxshilash kerak
-                </h3>
-                <ul className="space-y-2">
-                  {result.improvement_areas.map((item, i) => (
-                    <li key={i} className="flex items-start gap-2 text-sm text-gray-300">
-                      <span className="text-yellow-400 mt-0.5">•</span>
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </Card>
+      {/* AI Kundalik Maslahat */}
+      <Card glass className="mb-4 border-violet-500/10 bg-gradient-to-br from-violet-600/5 to-transparent">
+        <div className="flex items-start gap-3">
+          <div className="w-8 h-8 rounded-lg bg-violet-500/20 flex items-center justify-center shrink-0 mt-0.5">
+            <span className="text-sm">💡</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-medium text-violet-400 mb-1">AI Kunlik Maslahat</p>
+            {tipLoading ? (
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 border border-violet-400/50 border-t-violet-400 rounded-full animate-spin" />
+                <span className="text-xs text-gray-500">Yuklanmoqda...</span>
+              </div>
+            ) : (
+              <p className="text-sm text-gray-300 leading-relaxed">{aiTip || 'Har kuni kamida 8 stakan suv iching!'}</p>
             )}
           </div>
-        )}
-
-        <WorkoutPlan workouts={result.workout_plan} />
-        <DietTips tips={result.diet_tips} />
-
-        {result.safety_note && (
-          <Card className="border-yellow-500/20 bg-yellow-500/5">
-            <p className="text-sm text-yellow-200/80">
-              ⚠️ {result.safety_note}
-            </p>
-          </Card>
-        )}
-
-        <div className="flex gap-3 pt-4">
-          <Link href="/upload">
-            <Button>Yangi tahlil</Button>
-          </Link>
-          <Link href="/history">
-            <Button variant="secondary">Tarix</Button>
-          </Link>
         </div>
+      </Card>
+
+      {/* Profil holati */}
+      <Card glass className="mb-4 border-white/5">
+        <div className="grid grid-cols-3 divide-x divide-white/5">
+          <div className="text-center px-2">
+            <p className="text-xs text-gray-500">Bo&apos;y</p>
+            <p className="text-lg font-semibold text-white">{profile.height_cm || '—'}</p>
+            <p className="text-[10px] text-gray-500">sm</p>
+          </div>
+          <div className="text-center px-2">
+            <p className="text-xs text-gray-500">Vazn</p>
+            <p className="text-lg font-semibold text-white">{profile.weight_kg || '—'}</p>
+            <p className="text-[10px] text-gray-500">kg</p>
+          </div>
+          <div className="text-center px-2">
+            <p className="text-xs text-gray-500">Yosh</p>
+            <p className="text-lg font-semibold text-white">{profile.age || '—'}</p>
+            <p className="text-[10px] text-gray-500">yil</p>
+          </div>
+        </div>
+      </Card>
+
+      {/* Tezkor tugmalar 2x2 grid */}
+      <div className="grid grid-cols-2 gap-3">
+        {quickActions.map((action) => (
+          <Link key={action.href} href={action.href}>
+            <Card glass className={`border bg-gradient-to-br ${action.color} hover:scale-[1.02] transition-transform cursor-pointer h-full`}>
+              <div className="text-2xl mb-2">{action.icon}</div>
+              <p className="text-sm font-semibold text-white">{action.label}</p>
+              <p className="text-[11px] text-gray-400 mt-0.5">{action.desc}</p>
+            </Card>
+          </Link>
+        ))}
       </div>
     </PageWrapper>
   )

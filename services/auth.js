@@ -6,7 +6,13 @@ export async function signInWithGoogle() {
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo },
+    options: {
+      redirectTo,
+      queryParams: {
+        prompt: 'select_account',
+      },
+      skipBrowserRedirect: false,
+    },
   })
 
   if (error) throw error

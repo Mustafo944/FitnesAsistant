@@ -31,7 +31,7 @@ export async function POST(request) {
   }
 
   const body = await request.json()
-  const { height_cm, weight_kg, age, gender, goal, activity_level } = body
+  const { height_cm, weight_kg, age, gender, goal, activity_level, first_name, last_name } = body
 
   const validation = validateProfileData({
     height: height_cm,
@@ -51,6 +51,8 @@ export async function POST(request) {
     .upsert({
       id: user.id,
       full_name: user.user_metadata?.full_name || '',
+      first_name: first_name || '',
+      last_name: last_name || '',
       avatar_url: user.user_metadata?.avatar_url || '',
       height_cm,
       weight_kg,
