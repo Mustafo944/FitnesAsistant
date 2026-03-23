@@ -36,3 +36,56 @@ select {
   background-repeat: no-repeat;
   background-size: 20px;
 }
+
+/* Galaxy Background */
+.galaxy-bg {
+  background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
+  overflow: hidden;
+  position: relative;
+}
+
+.stars {
+  width: 1px;
+  height: 1px;
+  background: transparent;
+  box-shadow: 1744px 1222px #FFF , 134px 1321px #FFF , 92px 859px #FFF; /* Simplified for brevity, will use a more robust generator or pattern */
+  animation: animStar 50s linear infinite;
+}
+
+@keyframes animStar {
+  from { transform: translateY(0px); }
+  to { transform: translateY(-2000px); }
+}
+
+.neon-glow {
+  box-shadow: 0 0 20px rgba(139, 92, 246, 0.5), 0 0 40px rgba(139, 92, 246, 0.2);
+}
+
+.neon-border {
+  border: 1px solid rgba(139, 92, 246, 0.5);
+  position: relative;
+}
+
+.neon-border::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg, #ff00ff, #7000ff, #0012ff, #00dfff, #00ffc6, #00ff00, #ffed00, #ff0000);
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(10px);
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+  border-radius: inherit;
+}
+
+.neon-border:hover::after {
+  opacity: 0.6;
+  animation: neon-glow-anim 20s linear infinite;
+}
+
+@keyframes neon-glow-anim {
+  0% { background-position: 0 0; }
+  50% { background-position: 400% 0; }
+  100% { background-position: 0 0; }
+}
