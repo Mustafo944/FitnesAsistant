@@ -10,6 +10,11 @@ export async function GET(request) {
     const supabase = await getSupabaseServerClient()
     const { error } = await supabase.auth.exchangeCodeForSession(code)
 
+    if (error) {
+      console.error('Auth Callback xatolik:', error.message)
+      return NextResponse.redirect(new URL(`/?error=${encodeURIComponent(error.message)}`, request.url))
+    }
+
     if (!error) {
       // Profil borligini tekshirish
       const { data: { user } } = await supabase.auth.getUser()
@@ -32,5 +37,6 @@ export async function GET(request) {
   }
 
   // Xatolik bo'lsa bosh sahifaga qaytarish
-  return NextResponse.redirect(new URL('/', request.url))
+  console.log('No code found in params:', request.url)
+  return NextResponse.redirect(new URL('/?error=no_code', request.url))
 }
