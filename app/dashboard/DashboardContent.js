@@ -16,6 +16,7 @@ export default function DashboardContent() {
   const [latestAnalysis, setLatestAnalysis] = useState(null)
   const [loading, setLoading] = useState(true)
 
+  useEffect(() => {
     // Profil ma'lumotlarini olish
     fetch('/api/profile')
       .then(res => res.ok ? res.json() : null)
