@@ -2,15 +2,12 @@ import { getSupabaseBrowserClient } from '@/lib/supabase/client'
 
 export async function signInWithGoogle() {
   const supabase = getSupabaseBrowserClient()
-  // PKCE verifier cookie uchun domen mos kelishi shart.
-  // Shuning uchun redirectTo doim hozirgi domenga (origin) yo'naltirishi kerak.
   const redirectTo = `${window.location.origin}/auth/callback`
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
       redirectTo,
-      skipBrowserRedirect: true, // Avtomatik redirectni to'xtatamiz (race condition oldini olish uchun)
       queryParams: {
         prompt: 'select_account',
       },
@@ -18,14 +15,6 @@ export async function signInWithGoogle() {
   })
 
   if (error) throw error
-
-  // Cookie to'liq yozilishi uchun kichik kechikish berib o'zimiz yo'naltiramiz
-  if (data?.url) {
-    setTimeout(() => {
-      window.location.href = data.url
-    }, 100)
-  }
-  
   return data
 }
 
