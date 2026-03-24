@@ -7,13 +7,11 @@ export async function GET(request) {
 
   if (!code) {
     console.error('[Auth Callback] No code in URL:', request.url)
-    return NextResponse.redirect(new URL('/?error=no_code', request.url))
+    return NextResponse.redirect(new URL('/?error=no_code_present', request.url))
   }
 
   // We need ONE mutable response object to attach all cookies to.
-  // Start by assuming we'll go to /dashboard; we'll change destination if needed.
   let destination = '/dashboard'
-
   const response = NextResponse.redirect(new URL(destination, origin))
 
   // Netlify orqasidagi haqiqiy protokolni aniqlash
@@ -71,8 +69,6 @@ export async function GET(request) {
 
     if (profileError) {
       console.error('[Auth Callback] profile fetch error:', profileError)
-      // Biz profilni topa olmasak ham dashboard ga o'tkazvoramiz (xato bilan loop ga tushmasligi u-n)
-      // Yoki onboarding ga jo'natamiz.
       destination = '/onboarding'
     } else if (!profile?.onboarded) {
       destination = '/onboarding'
