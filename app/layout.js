@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google'
 import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import BottomNav from '@/components/layout/BottomNav'
+import PageTransition from '@/components/layout/PageTransition'
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] })
 
@@ -27,7 +28,9 @@ export default function RootLayout({ children }) {
         <div className="relative z-10 flex flex-col min-h-screen">
           <Navbar />
           <main className="flex-1 pb-20 md:pb-24">
-            {children}
+            <PageTransition>
+              {children}
+            </PageTransition>
           </main>
           <BottomNav />
         </div>
