@@ -1,6 +1,5 @@
 'use client'
 
-import Button from '@/components/ui/Button'
 import { signInWithGoogle } from '@/services/auth'
 import { useState } from 'react'
 

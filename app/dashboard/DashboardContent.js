@@ -10,6 +10,7 @@ import BmiCard from '@/components/dashboard/BmiCard'
 import CalorieCard from '@/components/dashboard/CalorieCard'
 import WorkoutPlan from '@/components/dashboard/WorkoutPlan'
 import DietTips from '@/components/dashboard/DietTips'
+import { calculateBMI, getBMICategory, calculateCalories } from '@/lib/calculations'
 
 export default function DashboardContent() {
   const [profile, setProfile] = useState(null)
@@ -53,18 +54,18 @@ export default function DashboardContent() {
   }
 
   // BMI hisoblash
-  const heightM = (profile.height_cm || 170) / 100
-  const bmi = ((profile.weight_kg || 70) / (heightM * heightM)).toFixed(1)
-  const bmiStatus = bmi < 18.5 ? 'Kam vazn' : bmi < 25 ? 'Normal' : bmi < 30 ? 'Ortiqcha' : 'Semirib ketgan'
-  const bmiColor = bmi < 18.5 ? 'text-blue-400' : bmi < 25 ? 'text-green-400' : bmi < 30 ? 'text-yellow-400' : 'text-red-400'
-  const bmiGlow = bmi < 18.5 ? 'shadow-blue-500/20' : bmi < 25 ? 'shadow-green-500/20' : bmi < 30 ? 'shadow-yellow-500/20' : 'shadow-red-500/20'
+  const bmi = calculateBMI(profile.weight_kg || 70, profile.height_cm || 170)
+  const bmiCategory = getBMICategory(bmi)
+  const bmiStatus = bmiCategory.label
 
   // Kaloriya
-  const bmr = profile.gender === 'male'
-    ? 10 * (profile.weight_kg || 70) + 6.25 * (profile.height_cm || 170) - 5 * (profile.age || 25) + 5
-    : 10 * (profile.weight_kg || 70) + 6.25 * (profile.height_cm || 170) - 5 * (profile.age || 25) - 161
-  const activityMultiplier = { passiv: 1.2, yengil: 1.375, o_rtacha: 1.55, faol: 1.725 }
-  const tdee = Math.round(bmr * (activityMultiplier[profile.activity_level] || 1.55))
+  const { maintenance: tdee } = calculateCalories(
+    profile.weight_kg || 70,
+    profile.height_cm || 170,
+    profile.age || 25,
+    profile.gender || 'male',
+    profile.activity_level
+  )
 
   const displayName = profile.first_name || profile.full_name?.split(' ')[0] || 'Foydalanuvchi'
 

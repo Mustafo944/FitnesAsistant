@@ -43,7 +43,7 @@ export async function middleware(request) {
   const { data: { user } } = await supabase.auth.getUser()
 
   // Avtorizatsiya tekshirish
-  if (!user && !['/', '/auth/callback'].includes(request.nextUrl.pathname)) {
+  if (!user) {
     return NextResponse.redirect(new URL('/', request.url))
   }
 
@@ -51,5 +51,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ['/onboarding', '/upload', '/dashboard', '/history', '/plan', '/plan/diet', '/plan/workout'],
+  matcher: ['/onboarding', '/upload', '/dashboard', '/history', '/plan', '/plan/diet', '/plan/workout', '/settings', '/chat'],
 }
