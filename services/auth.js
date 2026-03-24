@@ -5,7 +5,7 @@ export async function signInWithGoogle() {
   // Netlify bir nechta domen ishlatadi (main--, deploy preview).
   // Cookie faqat bitta domenda ishlaydi, shuning uchun doim kanonik URL ishlatamiz.
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
-  const redirectTo = `${siteUrl}/api/auth/callback`
+  const redirectTo = `${siteUrl}/auth/callback`
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',

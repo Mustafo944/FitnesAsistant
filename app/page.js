@@ -10,11 +10,11 @@ export default async function HomePage({ searchParams }) {
       {/* Exact Nebula Background Simulation */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[#030008]" />
-        
+
         {/* Extremely Bright Nebula Clouds */}
         <div className="absolute top-[-10%] left-[-5%] w-[70%] h-[70%] bg-purple-600/40 blur-[130px] rounded-full" />
         <div className="absolute bottom-[0%] right-[-10%] w-[80%] h-[60%] bg-blue-600/35 blur-[130px] rounded-full" />
-        
+
         {/* Bright Flare arcs */}
         <div className="absolute top-[10%] left-[5%] w-[45%] h-[2px] bg-gradient-to-r from-transparent via-purple-400 to-transparent rotate-[-12deg] blur-[2px] opacity-60" />
         <div className="absolute bottom-[20%] right-[-10%] w-[60%] h-[2px] bg-gradient-to-r from-transparent via-blue-400 to-transparent rotate-[20deg] blur-[2px] opacity-50" />
@@ -44,10 +44,10 @@ export default async function HomePage({ searchParams }) {
 
         <div className="flex flex-col items-center justify-center gap-6">
           <LoginButton />
-          
+
           {error && (
             <div className="w-full max-w-sm bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-2xl backdrop-blur-md">
-              <p className="font-bold text-sm mb-1 " flex items-center gap-2>
+              <p className="font-bold text-sm mb-1 flex items-center gap-2">
                 <span>⚠️</span> Kirishda xatolik yuz berdi:
               </p>
               <p className="text-xs opacity-80 break-words">{error}</p>
