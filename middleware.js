@@ -5,7 +5,7 @@ export async function middleware(request) {
   const { pathname } = request.nextUrl
 
   // Himoyalanmaydigan sahifalar
-  const publicPaths = ['/', '/api/auth/callback']
+  const publicPaths = ['/', '/auth/callback']
   if (publicPaths.includes(pathname) || pathname.startsWith('/api/')) {
     return NextResponse.next()
   }
