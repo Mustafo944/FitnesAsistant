@@ -13,16 +13,20 @@ import DietTips from '@/components/dashboard/DietTips'
 
 export default function DashboardContent() {
   const [profile, setProfile] = useState(null)
+  const [latestAnalysis, setLatestAnalysis] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  useEffect(() => {
+    // Profil ma'lumotlarini olish
     fetch('/api/profile')
       .then(res => res.ok ? res.json() : null)
-      .then(data => {
-        if (data) setProfile(data)
-      })
-      .catch(() => {})
+      .then(data => { if (data) setProfile(data) })
       .finally(() => setLoading(false))
+
+    // Oxirgi tahlilni olish (Gibrid xulosa uchun)
+    fetch('/api/history?latest=true')
+      .then(res => res.ok ? res.json() : null)
+      .then(data => { if (data) setLatestAnalysis(data) })
+      .catch(() => {})
   }, [])
 
 
@@ -63,37 +67,34 @@ export default function DashboardContent() {
 
   const displayName = profile.first_name || profile.full_name?.split(' ')[0] || 'Foydalanuvchi'
 
-  // Smart Local Analysis Engine
+  // Smart Local/Hybrid Analysis Engine
   const getSmartAnalysis = () => {
+    // 1. Agar AI tahlili bo'lsa (Gibrid rejim)
+    if (latestAnalysis?.result?.summary) {
+      return latestAnalysis.result.summary
+    }
+
+    // 2. Aks holda (Local rejim)
     let focus = ''
     let tip = ''
     
     // BMI Status Logic
     if (bmi < 18.5) {
       focus = "Vazn yetishmovchiligi"
-      tip = "Sizga mushak massasini oshirish (bulking) tavsiya etiladi. Ko'proq protein va sog'lom uglevodlar iste'mol qiling."
+      tip = "Sizga mushak massasini oshirish (bulking) tavsiya etiladi."
     } else if (bmi < 25) {
       focus = "Sog'lom tana ko'rsatkichi"
-      tip = "Tana holatingiz juda yaxshi! Maqsadingizga qarab, mushaklarni mustahkamlash yoki mavjud holatni saqlab qolish ustida ishlang."
+      tip = "Tana holatingiz juda yaxshi!"
     } else if (bmi < 30) {
-      focus = "Ortiqcha vazn (bosqich 1)"
-      tip = "Tana yog' foizini biroz kamaytirish foydali. Bu bo'g'inlar, ayniqsa tizzalar uchun yukni kamaytiradi."
+      focus = "Ortiqcha vazn"
+      tip = "Tana yog' foizini kamaytirish bo'g'inlar (ayniqsa tizza) uchun juda foydali."
     } else {
       focus = "Semirib ketish holati"
-      tip = "Vaznni nazorat qilish muhim. Bo'g'inlarga (tizza, bel) og'irlik tushmasligi uchun past intensivlikdagi kardiolar (yurish, velosiped) tavsiya etiladi."
+      tip = "Bo'g'inlarga (tizza, bel) og'irlik tushmasligi uchun yuk kamaytirilishi shart."
     }
 
-    // Goal Specific Logic
-    const goalMap = {
-      'fat_loss': "Yo'nalish: Yog' eritish. ",
-      'muscle_gain': "Yo'nalish: Mushak massasi. ",
-      'maintenance': "Yo'nalish: Balans saqlash. "
-    }
-    
-    // Calorie Context
-    const calorieContext = `Sizga kunlik ${tdee} kcal (ushlab turish) yoki ${tdee - 500} kcal (ozish uchun) energiya rejasi mos keladi.`
-
-    return `${goalMap[profile.goal] || ''}${focus} aniqlandi. ${tip} ${calorieContext}`
+    const calorieContext = `Kunlik ${tdee} kcal (saqlash) / ${tdee - 500} kcal (ozish) tavsiya etiladi.`
+    return `${focus} aniqlandi. ${tip} ${calorieContext}`
   }
 
   const smartSummary = getSmartAnalysis()
