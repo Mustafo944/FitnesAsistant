@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Link from 'next/link'
 import PageWrapper from '@/components/layout/PageWrapper'
 import Card from '@/components/ui/Card'
@@ -15,6 +15,11 @@ import { calculateBMI, getBMICategory, calculateCalories } from '@/lib/calculati
 export default function DashboardContent({ initialProfile, initialLatestAnalysis }) {
   const [profile] = useState(initialProfile)
   const [latestAnalysis] = useState(initialLatestAnalysis)
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
 
   const displayName = profile?.first_name || profile?.full_name?.split(' ')[0] || 'Foydalanuvchi'
 
@@ -77,6 +82,9 @@ export default function DashboardContent({ initialProfile, initialLatestAnalysis
 
   const smartSummary = getSmartAnalysis()
 
+  const dateString = mounted 
+    ? `${new Date().getFullYear()} · ${new Date().toLocaleDateString('uz-UZ', { month: 'long', day: 'numeric' })}`
+    : ''
 
   return (
     <PageWrapper className="max-w-2xl mx-auto py-10 px-4 pb-24">
@@ -91,8 +99,8 @@ export default function DashboardContent({ initialProfile, initialLatestAnalysis
         <h1 className="text-4xl font-extrabold text-white tracking-tight mb-2">
           Natijalar
         </h1>
-        <p className="text-gray-500 text-sm font-medium tracking-[0.2em] uppercase">
-          {new Date().getFullYear()} · {new Date().toLocaleDateString('uz-UZ', { month: 'long', day: 'numeric' })}
+        <p className="text-gray-500 text-sm font-medium tracking-[0.2em] uppercase min-h-[20px]">
+          {dateString}
         </p>
       </div>
 
