@@ -1,6 +1,16 @@
 import LoginButton from '@/components/auth/LoginButton'
+import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { redirect } from 'next/navigation'
 
 export default async function HomePage({ searchParams }) {
+  const supabase = await getSupabaseServerClient()
+  const { data: { user } } = await supabase.auth.getUser()
+
+  // Agar foydalanuvchi allaqachon tizimga kirgan bo'lsa, to'g'ridan-to'g'ri dashboard'ga o'tkazamiz
+  if (user) {
+    redirect('/dashboard')
+  }
+
   const params = await searchParams
   const error = params?.error
   const details = params?.details
