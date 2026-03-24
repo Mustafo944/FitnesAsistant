@@ -1,6 +1,10 @@
 import LoginButton from '@/components/auth/LoginButton'
 
-export default function HomePage() {
+export default async function HomePage({ searchParams }) {
+  const params = await searchParams
+  const error = params?.error
+  const details = params?.details
+
   return (
     <main className="h-screen h-[100dvh] flex items-center justify-center px-4 relative overflow-hidden bg-[#030008] touch-none">
       {/* Exact Nebula Background Simulation */}
@@ -38,8 +42,22 @@ export default function HomePage() {
           Sun&apos;iy intellekt yordamida tana holatingizni tahlil qiling va shaxsiy fitness rejangizni oling
         </p>
 
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center justify-center gap-6">
           <LoginButton />
+          
+          {error && (
+            <div className="w-full max-w-sm bg-red-500/10 border border-red-500/30 text-red-400 p-4 rounded-2xl backdrop-blur-md">
+              <p className="font-bold text-sm mb-1 " flex items-center gap-2>
+                <span>⚠️</span> Kirishda xatolik yuz berdi:
+              </p>
+              <p className="text-xs opacity-80 break-words">{error}</p>
+              {details && (
+                <p className="text-[10px] opacity-60 mt-2 break-words bg-black/20 p-2 rounded-lg">
+                  {details}
+                </p>
+              )}
+            </div>
+          )}
         </div>
 
         <p className="text-gray-500 text-sm mt-10 font-light opacity-60">

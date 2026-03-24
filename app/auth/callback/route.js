@@ -16,6 +16,12 @@ export async function GET(request) {
 
   const response = NextResponse.redirect(new URL(destination, origin))
 
+  // Netlify orqasidagi haqiqiy protokolni aniqlash
+  const forwardedProto = request.headers.get('x-forwarded-proto')
+  const isProduction = process.env.NODE_ENV === 'production' || origin.includes('netlify.app')
+  const finalProtocol = forwardedProto || (origin.startsWith('https') ? 'https' : 'http')
+  const secureCookie = finalProtocol === 'https' || isProduction
+
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
@@ -26,10 +32,9 @@ export async function GET(request) {
         },
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => {
-            // Ensure cookies are secure in production
             const cookieOptions = {
               ...options,
-              secure: origin.startsWith('https') || process.env.NODE_ENV === 'production',
+              secure: secureCookie,
               sameSite: 'lax',
               path: '/',
             }
@@ -41,32 +46,40 @@ export async function GET(request) {
     }
   )
 
-  const { error } = await supabase.auth.exchangeCodeForSession(code)
+  const { data: sessionData, error } = await supabase.auth.exchangeCodeForSession(code)
 
   if (error) {
     console.error('[Auth Callback] exchangeCodeForSession error:', error.message)
     return NextResponse.redirect(
-      new URL(`/?error=${encodeURIComponent(error.message)}`, request.url)
+      new URL(`/?error=exchange_code_failed&details=${encodeURIComponent(error.message)}`, request.url)
     )
   }
 
   // Determine where to send the user
   try {
-    const { data: { user } } = await supabase.auth.getUser()
+    const user = sessionData?.user || (await supabase.auth.getUser()).data.user
 
-    if (user) {
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('onboarded')
-        .eq('id', user.id)
-        .maybeSingle() // maybeSingle() returns null (not error) when no row found
+    if (!user) {
+       return NextResponse.redirect(new URL(`/?error=no_user_found_after_exchange`, request.url))
+    }
 
-      if (!profile?.onboarded) {
-        destination = '/onboarding'
-      }
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('onboarded')
+      .eq('id', user.id)
+      .maybeSingle()
+
+    if (profileError) {
+      console.error('[Auth Callback] profile fetch error:', profileError)
+      // Biz profilni topa olmasak ham dashboard ga o'tkazvoramiz (xato bilan loop ga tushmasligi u-n)
+      // Yoki onboarding ga jo'natamiz.
+      destination = '/onboarding'
+    } else if (!profile?.onboarded) {
+      destination = '/onboarding'
     }
   } catch (e) {
-    console.error('[Auth Callback] profile check error:', e)
+    console.error('[Auth Callback] try-catch error:', e.message)
+    return NextResponse.redirect(new URL(`/?error=fatal_try_catch&details=${encodeURIComponent(e.message)}`, request.url))
   }
 
   // Mutate the redirect URL on the existing response so cookies are preserved
