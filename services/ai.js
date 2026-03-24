@@ -31,7 +31,12 @@ export async function analyzeWithGemini(imageBase64, mimeType, metrics) {
 - Maqsad: ${metrics.goal || "Forma saqlash"}
 - Faollik darajasi: ${metrics.activity_level || "O'rtacha"}
 
-Ushbu rasmni va ma'lumotlarni tahlil qilib, foydalanuvchining MAQSADINI hisobga olgan holda JSON formatida natija ber.`
+Bizning hisob-kitoblarimiz (SHU QIYMATLARNI QO'LLANG):
+- BMI: ${metrics.bmi}
+- TDEE (Ushlab turish): ${metrics.tdee} kcal
+- Ozish uchun: ${metrics.tdee - 500} kcal
+
+Vazifa: Ushbu rasmni va aniq hisob-kitoblarimizni tahlil qilib, foydalanuvchining MAQSADINI hisobga olgan holda gibrid aqlli xulosa ber. Xulosada bizning formulalar natijasini AI ko'rgan vizual holat bilan birlashtir.`
 
   const result = await genai.models.generateContent({
     model: 'gemini-2.5-flash',

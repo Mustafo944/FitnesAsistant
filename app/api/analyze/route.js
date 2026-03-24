@@ -40,17 +40,7 @@ export async function POST(request) {
     const imageBase64 = imageBuffer.toString('base64')
     const mimeType = imageRes.headers.get('content-type') || 'image/jpeg'
 
-    // AI tahlil
-    let aiResult = await analyzeWithGemini(imageBase64, mimeType, {
-      height: profile.height_cm,
-      weight: profile.weight_kg,
-      age: profile.age,
-      gender: profile.gender,
-      goal: profile.goal,
-      activity_level: profile.activity_level,
-    })
-
-    // Hisoblangan qiymatlarni qo'shish/to'g'rilash
+    // Hisoblangan qiymatlarni TOP GA olib chiqamiz (Gibrid tahlil uchun)
     const bmiValue = calculateBMI(profile.weight_kg, profile.height_cm)
     const calories = calculateCalories(
       profile.weight_kg,
@@ -58,6 +48,18 @@ export async function POST(request) {
       profile.age,
       profile.gender
     )
+
+    // AI tahlil (Endi hisob-kitoblar bilan birga yuboramiz)
+    let aiResult = await analyzeWithGemini(imageBase64, mimeType, {
+      height: profile.height_cm,
+      weight: profile.weight_kg,
+      age: profile.age,
+      gender: profile.gender,
+      goal: profile.goal,
+      activity_level: profile.activity_level,
+      bmi: bmiValue,
+      tdee: calories.maintenance,
+    })
 
     aiResult.bmi = {
       value: bmiValue,
