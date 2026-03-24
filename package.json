@@ -20,7 +20,6 @@
     "recharts": "^3.8.0"
   },
   "devDependencies": {
-    "@netlify/plugin-nextjs": "^5.15.9",
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "16.2.1",
