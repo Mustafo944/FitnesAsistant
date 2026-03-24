@@ -10,11 +10,22 @@ export async function signInWithGoogle() {
     provider: 'google',
     options: {
       redirectTo,
-      skipBrowserRedirect: false,
+      skipBrowserRedirect: true, // Avtomatik redirectni to'xtatamiz (race condition oldini olish uchun)
+      queryParams: {
+        prompt: 'select_account',
+      },
     },
   })
 
   if (error) throw error
+
+  // Cookie to'liq yozilishi uchun kichik kechikish berib o'zimiz yo'naltiramiz
+  if (data?.url) {
+    setTimeout(() => {
+      window.location.href = data.url
+    }, 100)
+  }
+  
   return data
 }
 
