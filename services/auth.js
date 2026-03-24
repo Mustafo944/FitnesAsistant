@@ -2,10 +2,9 @@ import { getSupabaseBrowserClient } from '@/lib/supabase/client'
 
 export async function signInWithGoogle() {
   const supabase = getSupabaseBrowserClient()
-  // Netlify bir nechta domen ishlatadi (main--, deploy preview).
-  // Cookie faqat bitta domenda ishlaydi, shuning uchun doim kanonik URL ishlatamiz.
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin
-  const redirectTo = `${siteUrl}/auth/callback`
+  // PKCE verifier cookie uchun domen mos kelishi shart.
+  // Shuning uchun redirectTo doim hozirgi domenga (origin) yo'naltirishi kerak.
+  const redirectTo = `${window.location.origin}/auth/callback`
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
