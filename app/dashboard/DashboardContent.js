@@ -135,8 +135,8 @@ export default function DashboardContent() {
           <CalorieCard calories={{ maintenance: tdee, fat_loss: tdee - 500 }} />
         </div>
 
-        {/* Quick Navigate to Details */}
-        <div className="pt-10 border-t border-white/5">
+        {/* Quick Navigate to Details - Desktop only (mobile has BottomNav) */}
+        <div className="hidden md:block pt-10 border-t border-white/5">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {quickActions.map((action) => (
               <Link key={action.href} href={action.href}>

@@ -46,5 +46,5 @@ export async function middleware(request) {
 }
 
 export const config = {
-  matcher: ['/onboarding', '/upload', '/dashboard', '/history'],
+  matcher: ['/onboarding', '/upload', '/dashboard', '/history', '/plan', '/plan/diet', '/plan/workout'],
 }
