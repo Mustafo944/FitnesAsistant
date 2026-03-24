@@ -25,11 +25,16 @@ export async function GET(request) {
           return request.cookies.getAll()
         },
         setAll(cookiesToSet) {
-          // This is the key: cookies are written to BOTH request (so we can
-          // read them immediately) and the response (so the browser gets them).
           cookiesToSet.forEach(({ name, value, options }) => {
+            // Ensure cookies are secure in production
+            const cookieOptions = {
+              ...options,
+              secure: origin.startsWith('https') || process.env.NODE_ENV === 'production',
+              sameSite: 'lax',
+              path: '/',
+            }
             request.cookies.set(name, value)
-            response.cookies.set(name, value, options)
+            response.cookies.set(name, value, cookieOptions)
           })
         },
       },

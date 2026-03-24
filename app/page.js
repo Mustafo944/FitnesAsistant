@@ -2,7 +2,7 @@ import LoginButton from '@/components/auth/LoginButton'
 
 export default function HomePage() {
   return (
-    <main className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden bg-[#030008]">
+    <main className="h-screen h-[100dvh] flex items-center justify-center px-4 relative overflow-hidden bg-[#030008] touch-none">
       {/* Exact Nebula Background Simulation */}
       <div className="absolute inset-0 z-0">
         <div className="absolute inset-0 bg-[#030008]" />
