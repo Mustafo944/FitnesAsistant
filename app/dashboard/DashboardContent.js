@@ -130,6 +130,28 @@ export default function DashboardContent() {
           <CalorieCard calories={{ maintenance: tdee, fat_loss: tdee - 500 }} />
         </div>
 
+        {/* 3. Tezkor Amallar qismi */}
+        <div className="grid grid-cols-2 gap-4">
+          <Link href="/progress" className="block p-4 rounded-[24px] bg-white/[0.03] backdrop-blur-[32px] border border-white/5 shadow-xl hover:border-violet-500/40 hover:shadow-[0_0_20px_rgba(139,92,246,0.2)] transition-all">
+            <div className="flex items-center gap-3">
+              <span className="text-3xl filter drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]">📊</span>
+              <div>
+                <h3 className="text-sm font-bold text-white">Grafik</h3>
+                <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">O'zgarish</p>
+              </div>
+            </div>
+          </Link>
+          <Link href="/history" className="block p-4 rounded-[24px] bg-white/[0.03] backdrop-blur-[32px] border border-white/5 shadow-xl hover:border-blue-500/40 hover:shadow-[0_0_20px_rgba(59,130,246,0.2)] transition-all">
+            <div className="flex items-center gap-3">
+              <span className="text-3xl filter drop-shadow-[0_0_8px_rgba(59,130,246,0.6)]">📜</span>
+              <div>
+                <h3 className="text-sm font-bold text-white">Tarix</h3>
+                <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">Barcha tahlillar</p>
+              </div>
+            </div>
+          </Link>
+        </div>
+
       </div>
     </PageWrapper>
   )
