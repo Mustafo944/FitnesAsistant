@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import PageWrapper from '@/components/layout/PageWrapper'
 import Card from '@/components/ui/Card'
@@ -12,33 +12,11 @@ import WorkoutPlan from '@/components/dashboard/WorkoutPlan'
 import DietTips from '@/components/dashboard/DietTips'
 import { calculateBMI, getBMICategory, calculateCalories } from '@/lib/calculations'
 
-export default function DashboardContent() {
-  const [profile, setProfile] = useState(null)
-  const [latestAnalysis, setLatestAnalysis] = useState(null)
-  const [loading, setLoading] = useState(true)
+export default function DashboardContent({ initialProfile, initialLatestAnalysis }) {
+  const [profile] = useState(initialProfile)
+  const [latestAnalysis] = useState(initialLatestAnalysis)
 
-  useEffect(() => {
-    // Profil ma'lumotlarini olish
-    fetch('/api/profile')
-      .then(res => res.ok ? res.json() : null)
-      .then(data => { if (data) setProfile(data) })
-      .finally(() => setLoading(false))
-
-    // Oxirgi tahlilni olish (Gibrid xulosa uchun)
-    fetch('/api/history?latest=true')
-      .then(res => res.ok ? res.json() : null)
-      .then(data => { if (data) setLatestAnalysis(data) })
-      .catch(() => {})
-  }, [])
-
-
-  if (loading) {
-    return (
-      <PageWrapper className="flex items-center justify-center min-h-[60vh]">
-        <Spinner size="lg" />
-      </PageWrapper>
-    )
-  }
+  const displayName = profile?.first_name || profile?.full_name?.split(' ')[0] || 'Foydalanuvchi'
 
   if (!profile) {
     return (
@@ -66,8 +44,6 @@ export default function DashboardContent() {
     profile.gender || 'male',
     profile.activity_level
   )
-
-  const displayName = profile.first_name || profile.full_name?.split(' ')[0] || 'Foydalanuvchi'
 
   // Smart Local/Hybrid Analysis Engine
   const getSmartAnalysis = () => {
