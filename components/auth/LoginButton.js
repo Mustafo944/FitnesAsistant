@@ -6,13 +6,9 @@ import { useState } from 'react'
 export default function LoginButton() {
   const [loading, setLoading] = useState(false)
 
-  const handleLogin = async () => {
+  const handleLogin = () => {
     setLoading(true)
-    try {
-      await signInWithGoogle()
-    } catch {
-      setLoading(false)
-    }
+    window.location.href = '/api/auth/login'
   }
 
   return (

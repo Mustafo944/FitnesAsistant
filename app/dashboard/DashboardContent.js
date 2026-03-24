@@ -15,11 +15,6 @@ import { calculateBMI, getBMICategory, calculateCalories } from '@/lib/calculati
 export default function DashboardContent({ initialProfile, initialLatestAnalysis }) {
   const [profile] = useState(initialProfile)
   const [latestAnalysis] = useState(initialLatestAnalysis)
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
 
   const displayName = profile?.first_name || profile?.full_name?.split(' ')[0] || 'Foydalanuvchi'
 
@@ -82,9 +77,9 @@ export default function DashboardContent({ initialProfile, initialLatestAnalysis
 
   const smartSummary = getSmartAnalysis()
 
-  const dateString = mounted 
-    ? `${new Date().getFullYear()} · ${new Date().toLocaleDateString('uz-UZ', { month: 'long', day: 'numeric' })}`
-    : ''
+  const d = new Date()
+  const months = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr']
+  const dateString = `${d.getFullYear()} · ${d.getDate()}-${months[d.getMonth()]}`
 
   return (
     <PageWrapper className="max-w-2xl mx-auto py-10 px-4 pb-24">
