@@ -100,12 +100,6 @@ export default function DashboardContent() {
 
   const smartSummary = getSmartAnalysis()
 
-  const quickActions = [
-    { href: '/upload', icon: '📷', label: 'Rasm Tahlil', desc: 'Tana holatini tahlil', color: 'from-violet-600/20 to-purple-600/20 border-violet-500/20' },
-    { href: '/plan', icon: '📋', label: 'Haftalik Reja', desc: 'Dieta va mashqlar', color: 'from-blue-600/20 to-cyan-600/20 border-blue-500/20' },
-    { href: '/chat', icon: '🤖', label: 'AI Maslahat', desc: 'Savollar bering', color: 'from-green-600/20 to-emerald-600/20 border-green-500/20' },
-    { href: '/history', icon: '📊', label: 'Tarix', desc: 'Barcha natijalar', color: 'from-orange-600/20 to-amber-600/20 border-orange-500/20' },
-  ]
 
   return (
     <PageWrapper className="max-w-2xl mx-auto py-10 px-4 pb-24">
@@ -135,22 +129,6 @@ export default function DashboardContent() {
           <CalorieCard calories={{ maintenance: tdee, fat_loss: tdee - 500 }} />
         </div>
 
-        {/* Quick Navigate to Details - Desktop only (mobile has BottomNav) */}
-        <div className="hidden md:block pt-10 border-t border-white/5">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {quickActions.map((action) => (
-              <Link key={action.href} href={action.href}>
-                <div className="group relative h-full">
-                  <div className={`absolute inset-0 rounded-2xl bg-gradient-to-br ${action.color.split(' ')[1]} opacity-0 group-hover:opacity-40 blur-xl transition-opacity`} />
-                  <Card glass className={`relative h-full flex flex-col items-center justify-center p-4 border ${action.color.split(' ')[2]} bg-gradient-to-br ${action.color.split(' ')[0]} ${action.color.split(' ')[1]} hover:scale-[1.05] transition-all cursor-pointer overflow-hidden rounded-2xl`}>
-                    <div className="text-2xl mb-2">{action.icon}</div>
-                    <p className="text-[10px] font-bold text-white uppercase tracking-tighter">{action.label}</p>
-                  </Card>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
       </div>
     </PageWrapper>
   )

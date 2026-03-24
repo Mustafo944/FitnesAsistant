@@ -57,7 +57,8 @@ export async function POST(request) {
       .eq('id', user.id)
 
     if (updateError) {
-      console.warn("Planni DB ga saqlash amalga oshmadi, davom etyapmiz.", updateError)
+      console.error("Plan update error:", updateError)
+      return Response.json({ message: "Rejani saqlashda xatolik: " + updateError.message }, { status: 500 })
     }
 
     return Response.json({ plan: aiPlan })
@@ -85,8 +86,10 @@ export async function GET(request) {
     .single()
 
   if (profileError) {
-    return Response.json({ message: "Reja topilmadi" }, { status: 404 })
+    console.error('Fetch plan error:', profileError)
+    // Agar kutingan xato bo'lsa (masalan profil hali yo'q yoki column yo'q)
+    return Response.json({ plan: null, error: profileError.message }, { status: 200 })
   }
 
-  return Response.json({ plan: profile?.current_plan })
+  return Response.json({ plan: profile?.current_plan || null })
 }
