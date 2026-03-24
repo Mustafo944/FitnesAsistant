@@ -2,14 +2,15 @@ import { getSupabaseBrowserClient } from '@/lib/supabase/client'
 
 export async function signInWithGoogle() {
   const supabase = getSupabaseBrowserClient()
-  const redirectTo = `${window.location.origin}/auth/callback`
-
+  const origin = window.location.origin
+  
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
     options: {
-      redirectTo,
+      redirectTo: `${origin}/auth/callback`,
       queryParams: {
-        prompt: 'select_account',
+        access_type: 'offline',
+        prompt: 'consent',
       },
     },
   })
