@@ -20,6 +20,25 @@ export default function ChatPage() {
   }, [messages])
 
   useEffect(() => {
+    // Sahifa yuklanganda tarixni olish
+    const fetchHistory = async () => {
+      try {
+        const res = await fetch('/api/chat/history')
+        if (res.ok) {
+          const data = await res.json()
+          if (data.messages && data.messages.length > 0) {
+            setMessages(data.messages)
+          }
+        }
+      } catch (err) {
+        console.error('Chat tarixini yuklashda xatolik:', err)
+      }
+    }
+    
+    fetchHistory()
+  }, [])
+
+  useEffect(() => {
     // Brauzer SpeechRecognition API ni tekshirish
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
     if (SpeechRecognition) {

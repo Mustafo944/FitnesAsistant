@@ -32,6 +32,15 @@ export async function POST(request) {
       return Response.json({ message: 'Xabar kiritilmadi' }, { status: 400 })
     }
 
+    // Foydalanuvchi xabarini bazaga yozish (kutmaymiz - asinkron ketsin orqa fonda)
+    supabase.from('chat_messages').insert([{
+      user_id: user.id,
+      role: 'user',
+      content: message
+    }]).then(({error}) => {
+      if(error) console.error("Kechiktirilgan saitin xatosi:", error)
+    })
+
     // Tarixni Gemini formatiga moslash
     const formattedHistory = (history || []).map(msg => ({
       role: msg.role === 'user' ? 'user' : 'model',
@@ -53,6 +62,15 @@ export async function POST(request) {
     })
 
     const reply = chatSession.text
+
+    // AI'ning javobini ham bazaga yozish (kutmaymiz)
+    supabase.from('chat_messages').insert([{
+      user_id: user.id,
+      role: 'model',
+      content: reply
+    }]).then(({error}) => {
+      if(error) console.error("Kechiktirilgan saqlash xatosi (model):", error)
+    })
 
     return Response.json({ reply })
   } catch (err) {
