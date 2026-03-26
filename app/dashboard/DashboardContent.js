@@ -77,9 +77,13 @@ export default function DashboardContent({ initialProfile, initialLatestAnalysis
 
   const smartSummary = getSmartAnalysis()
 
-  const d = new Date()
-  const months = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr']
-  const dateString = `${d.getFullYear()} · ${d.getDate()}-${months[d.getMonth()]}`
+  const [dateString, setDateString] = useState('')
+
+  useEffect(() => {
+    const d = new Date()
+    const months = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr']
+    setDateString(`${d.getFullYear()} · ${d.getDate()}-${months[d.getMonth()]}`)
+  }, [])
 
   return (
     <PageWrapper className="max-w-2xl mx-auto py-10 px-4 pb-24">

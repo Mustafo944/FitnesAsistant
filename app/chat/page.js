@@ -1,5 +1,6 @@
 'use client'
 
+import { motion } from 'framer-motion'
 import { useState, useRef, useEffect } from 'react'
 import PageWrapper from '@/components/layout/PageWrapper'
 import Card from '@/components/ui/Card'
@@ -83,8 +84,10 @@ export default function ChatPage() {
     const userMsg = input.trim()
     setInput('')
     
-    // Yuboriladigan xabarlar tarixi
-    const history = messages.map(m => ({ role: m.role, content: m.content }))
+    // Yuboriladigan xabarlar tarixi (xatolik xabarlarini chiqaramiz)
+    const history = messages
+      .filter(m => m.role !== 'error')
+      .map(m => ({ role: m.role, content: m.content }))
     
     // Mahalliy UI ga xabarni qo'shish
     setMessages(prev => [...prev, { role: 'user', content: userMsg }])
@@ -103,7 +106,7 @@ export default function ChatPage() {
       
       setMessages(prev => [...prev, { role: 'model', content: data.reply }])
     } catch (err) {
-      setMessages(prev => [...prev, { role: 'model', content: `Xatolik: ${err.message}` }])
+      setMessages(prev => [...prev, { role: 'error', content: "Tarmoqda xatolik yuz berdi yoki AI band. Iltimos, qayta urinib ko'ring." }])
     } finally {
       setLoading(false)
     }
@@ -131,29 +134,46 @@ export default function ChatPage() {
           )}
           
           {messages.map((msg, i) => (
-            <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-              <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                msg.role === 'user' 
-                  ? 'bg-violet-600 text-white rounded-br-none' 
-                  : 'bg-white/10 text-gray-200 rounded-bl-none border border-white/5'
-              }`}>
-                {msg.role === 'model' ? (
-                  <div className="prose prose-invert max-w-none text-sm leading-relaxed prose-p:my-1 prose-headings:my-2 prose-ul:my-1 prose-li:my-0">
-                    <ReactMarkdown>{msg.content}</ReactMarkdown>
-                  </div>
-                ) : (
-                  <p className="text-sm">{msg.content}</p>
-                )}
-              </div>
-            </div>
+            <motion.div 
+              key={msg.id || i}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.3 }}
+              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            >
+              {msg.role === 'error' ? (
+                <div className="max-w-[80%] rounded-2xl px-5 py-3.5 shadow-lg bg-red-500/10 border border-red-500/20 text-red-400 flex items-center gap-3">
+                  <span className="text-xl">⚠️</span>
+                  <p className="text-sm font-medium">{msg.content}</p>
+                </div>
+              ) : (
+                <div className={`max-w-[80%] rounded-3xl px-5 py-3.5 shadow-lg ${
+                  msg.role === 'user' 
+                    ? 'bg-gradient-to-tr from-violet-600 to-fuchsia-500 text-white rounded-br-none border border-white/10' 
+                    : 'bg-white/5 backdrop-blur-xl text-gray-200 rounded-bl-sm border border-white/10'
+                }`}>
+                  {msg.role === 'model' ? (
+                    <div className="prose prose-invert max-w-none text-sm leading-relaxed prose-p:my-1 prose-headings:my-2 prose-ul:my-1 prose-li:my-0">
+                      <ReactMarkdown>{msg.content}</ReactMarkdown>
+                    </div>
+                  ) : (
+                    <p className="text-sm font-medium">{msg.content}</p>
+                  )}
+                </div>
+              )}
+            </motion.div>
           ))}
           {loading && (
-            <div className="flex justify-start">
-              <div className="bg-white/10 text-gray-200 rounded-2xl rounded-bl-none px-4 py-4 border border-white/5 flex items-center gap-2">
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex justify-start"
+            >
+              <div className="bg-white/5 text-gray-200 rounded-3xl rounded-bl-sm px-5 py-4 border border-white/10 shadow-lg flex items-center gap-3">
                 <Spinner className="w-4 h-4 text-violet-400" />
-                <span className="text-sm text-gray-400">Yozmoqda...</span>
+                <span className="text-sm font-medium text-gray-400">Yozmoqda...</span>
               </div>
-            </div>
+            </motion.div>
           )}
           <div ref={messagesEndRef} />
         </div>

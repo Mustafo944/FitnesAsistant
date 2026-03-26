@@ -1,14 +1,27 @@
 import PageWrapper from '@/components/layout/PageWrapper'
-import Spinner from '@/components/ui/Spinner'
+import Card from '@/components/ui/Card'
 
 export default function Loading() {
   return (
-    <PageWrapper className="flex items-center justify-center min-h-[60vh]">
-      <div className="flex flex-col items-center gap-4">
-        <Spinner size="lg" className="text-violet-500 shadow-[0_0_20px_rgba(139,92,246,0.5)] rounded-full animate-pulse" />
-        <p className="text-sm text-gray-400 font-medium tracking-widest uppercase animate-pulse">
-          Yuklanmoqda...
-        </p>
+    <PageWrapper className="max-w-2xl mx-auto py-10 px-4 pb-24">
+      <div className="text-center mb-10">
+        <div className="h-6 w-32 bg-white/5 animate-pulse rounded-full mx-auto mb-4" />
+        <div className="h-10 w-48 bg-white/10 animate-pulse rounded-xl mx-auto mb-2" />
+        <div className="h-4 w-24 bg-white/5 animate-pulse rounded-md mx-auto" />
+      </div>
+
+      <div className="space-y-8">
+        <Card className="h-40 bg-white/5 border border-white/5 animate-pulse rounded-3xl" />
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Card className="h-32 bg-white/5 border border-white/5 animate-pulse rounded-[24px]" />
+          <Card className="h-32 bg-white/5 border border-white/5 animate-pulse rounded-[24px]" />
+        </div>
+
+        <div className="grid grid-cols-2 gap-4">
+          <div className="h-28 bg-white/5 border border-white/5 animate-pulse rounded-[24px]" />
+          <div className="h-28 bg-white/5 border border-white/5 animate-pulse rounded-[24px]" />
+        </div>
       </div>
     </PageWrapper>
   )
