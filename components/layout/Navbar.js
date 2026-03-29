@@ -39,13 +39,18 @@ export default function Navbar() {
   useEffect(() => {
     const sub = onAuthChange((session) => {
       setUser(session?.user || null)
+      if (session?.user && (pathname === '/' || pathname === '/onboarding')) {
+        // Profil tekshiruvi server-side middleware'da ham bor
+        // Lekin mijoz tomonida darhol dashboardga otish:
+        if (pathname === '/') router.push('/dashboard')
+      }
       if (!session?.user) {
         setProfile(null)
         fetchedRef.current = false
       }
     })
     return () => sub.unsubscribe()
-  }, [])
+  }, [pathname, router])
 
   // Profile fetch — only once per session, cached in localStorage
   useEffect(() => {
