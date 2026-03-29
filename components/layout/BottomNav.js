@@ -61,20 +61,21 @@ const tabs = [
 
 export default function BottomNav() {
   const pathname = usePathname()
-  const [user, setUser] = useState(null)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
-    const sub = onAuthChange((session) => {
-      setUser(session?.user || null)
-    })
-    return () => sub.unsubscribe()
+    setMounted(true)
   }, [])
 
-  // Bosh sahifada, onboarding da va login bo'lmasa ko'rsatmaslik
-  if (pathname === '/' || pathname === '/onboarding' || pathname === '/auth/callback' || !user) return null
+  // Hydration mismatch oldini olish uchun mount bo'lguncha hech narsa bermaymiz
+  if (!mounted) return null
+
+  // Bosh sahifada, onboarding da va auth sahifalarida ko'rsatmaslik
+  const isHidden = pathname === '/' || pathname === '/onboarding' || pathname === '/auth/callback'
+  if (isHidden) return null
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/[0.03] backdrop-blur-[30px] border-t border-white/10 pb-safe shadow-[0_-4px_30px_rgba(0,0,0,0.1)]">
+    <nav className="fixed bottom-0 left-0 right-0 z-50 bg-[#08001a]/80 backdrop-blur-xl border-t border-white/5 pb-safe shadow-[0_-4px_30px_rgba(0,0,0,0.1)]">
       <div className="max-w-5xl mx-auto flex justify-around items-center h-16">
         {tabs.map((tab) => {
           const isActive = tab.exact

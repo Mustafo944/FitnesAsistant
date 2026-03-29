@@ -5,11 +5,12 @@ import Link from 'next/link'
 import PageWrapper from '@/components/layout/PageWrapper'
 import Card from '@/components/ui/Card'
 import Spinner from '@/components/ui/Spinner'
-import SummaryCard from '@/components/dashboard/SummaryCard'
-import BmiCard from '@/components/dashboard/BmiCard'
-import CalorieCard from '@/components/dashboard/CalorieCard'
-import WorkoutPlan from '@/components/dashboard/WorkoutPlan'
-import DietTips from '@/components/dashboard/DietTips'
+import dynamic from 'next/dynamic'
+const SummaryCard = dynamic(() => import('@/components/dashboard/SummaryCard'), { ssr: true })
+const BmiCard = dynamic(() => import('@/components/dashboard/BmiCard'), { ssr: true })
+const CalorieCard = dynamic(() => import('@/components/dashboard/CalorieCard'), { ssr: true })
+const WorkoutPlan = dynamic(() => import('@/components/dashboard/WorkoutPlan'), { ssr: false })
+const DietTips = dynamic(() => import('@/components/dashboard/DietTips'), { ssr: false })
 import { calculateBMI, getBMICategory, calculateCalories } from '@/lib/calculations'
 
 export default function DashboardContent({ initialProfile, initialLatestAnalysis }) {

@@ -195,12 +195,12 @@ export default function ChatPage() {
 
                   {/* Message Bubble */}
                   <div className={`
-                    relative px-6 py-4 rounded-[28px] shadow-2xl transition-all duration-300 border
+                    relative px-6 py-4 rounded-[28px] transition-all duration-300 border
                     ${msg.role === 'user'
-                      ? 'bg-gradient-to-br from-violet-600 to-indigo-700 border-white/20 text-white rounded-tr-md shadow-violet-900/20'
+                      ? 'bg-gradient-to-br from-violet-600 to-indigo-700 border-white/20 text-white rounded-tr-md shadow-lg shadow-violet-900/10'
                       : msg.role === 'error'
                         ? 'bg-red-500/10 border-red-500/30 text-red-400'
-                        : 'bg-white/[0.05] backdrop-blur-[40px] border-white/10 text-gray-100 rounded-tl-sm shadow-black/40'
+                        : 'bg-white/[0.05] backdrop-blur-xl border-white/10 text-gray-100 rounded-tl-sm shadow-md shadow-black/20'
                     }
                   `}>
                     {msg.role === 'model' ? (
@@ -220,7 +220,7 @@ export default function ChatPage() {
               animate={{ opacity: 1, x: 0 }}
               className="flex justify-start items-center gap-4 ml-2"
             >
-              <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-xl">
+              <div className="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center backdrop-blur-lg">
                 <div className="flex gap-1.5">
                   <span className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce [animation-duration:0.8s]" />
                   <span className="w-1.5 h-1.5 bg-violet-400 rounded-full animate-bounce [animation-duration:0.8s] [animation-delay:0.2s]" />
@@ -236,7 +236,7 @@ export default function ChatPage() {
         {/* Input Bar */}
         <div className="px-4 pb-8 pt-4">
           <div className="relative max-w-3xl mx-auto">
-            <div className="flex items-end gap-3 bg-white/[0.06] backdrop-blur-[50px] border border-white/15 rounded-[32px] p-2.5 pl-5 shadow-[0_20px_50px_rgba(0,0,0,0.5)] focus-within:border-violet-500/50 focus-within:shadow-[0_0_30px_rgba(139,92,246,0.15)] transition-all duration-500">
+            <div className="flex items-end gap-3 bg-white/[0.08] backdrop-blur-xl border border-white/10 rounded-[32px] p-2.5 pl-5 shadow-2xl focus-within:border-violet-500/30 transition-all duration-500">
               <textarea
                 ref={textareaRef}
                 value={input}

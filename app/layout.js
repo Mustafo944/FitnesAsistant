@@ -53,10 +53,10 @@ export default function RootLayout({ children }) {
       <body className={`${inter.className} relative min-h-screen bg-[#08001a] text-white antialiased`}>
         <Providers>
           <PWARegister />
-          <div className="fixed inset-0 z-0 pointer-events-none">
+          <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
             <div className="absolute inset-0 bg-[#08001a]" />
-            <div className="absolute top-[-20%] left-[-10%] w-[80%] h-[80%] bg-purple-600/20 blur-[150px] rounded-full" />
-            <div className="absolute bottom-[0%] right-[-10%] w-[80%] h-[80%] bg-blue-600/15 blur-[150px] rounded-full" />
+            <div className="absolute top-[-10%] left-[-5%] w-[60%] h-[60%] bg-purple-600/10 blur-[100px] rounded-full" />
+            <div className="absolute bottom-[-10%] right-[-5%] w-[60%] h-[60%] bg-blue-600/10 blur-[100px] rounded-full" />
           </div>
 
           <div className="relative z-10 flex flex-col min-h-screen">

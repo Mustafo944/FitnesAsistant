@@ -2,7 +2,8 @@ import { getSupabaseServerClient } from '@/lib/supabase/server'
 import DashboardContent from './DashboardContent'
 import { redirect } from 'next/navigation'
 
-export const dynamic = 'force-dynamic'
+// Boshqaruv paneli dinamik bo'lishi kerak, lekin 'force-dynamic' Next.js optimallarini cheklaydi
+// Next.js avtomatik ravishda auth va cookies borligi uchun bu sahifani dinamik qiladi
 
 export default async function DashboardPage() {
   const supabase = await getSupabaseServerClient()

@@ -9,10 +9,10 @@ export default function Card({ children, className = '', glass = false, neon = '
     red: 'border-red-500/40 shadow-[0_0_25px_rgba(239,68,68,0.2)] group-hover/card:shadow-[0_0_40px_rgba(239,68,68,0.3)]',
   }
 
-  // Increased transparency: bg-white/2 for glass, bg-[#0c0c14]/40 for non-glass
+  // Reduced backdrop-blur to standard sizes (xl/lg) for better performance
   const style = glass
-    ? `bg-white/[0.03] backdrop-blur-[32px] border border-white/10 shadow-2xl ${neon ? neonStyles[neon] : ''}`
-    : `bg-[#0c0c14]/40 backdrop-blur-2xl border border-white/5 shadow-xl ${neon ? neonStyles[neon] : ''}`
+    ? `bg-white/[0.04] backdrop-blur-xl border border-white/10 shadow-lg ${neon ? neonStyles[neon] : ''}`
+    : `bg-[#0c0c14]/40 backdrop-blur-lg border border-white/5 shadow-md ${neon ? neonStyles[neon] : ''}`
 
   return (
     <div className="perspective-1000">
