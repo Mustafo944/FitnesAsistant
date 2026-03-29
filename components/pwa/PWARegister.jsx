@@ -10,7 +10,14 @@ export default function PWARegister() {
   const [isStandalone, setIsStandalone] = useState(false)
   const [showPrompt, setShowPrompt] = useState(false)
 
+  const [dismissed, setDismissed] = useState(false)
+
   useEffect(() => {
+    // Session davomida yopilganini tekshirish
+    if (typeof window !== 'undefined' && sessionStorage.getItem('pwa_prompt_dismissed')) {
+      setDismissed(true)
+    }
+    
     // 1. Service Worker ni ro'yxatdan o'tkazish
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
@@ -41,7 +48,11 @@ export default function PWARegister() {
       e.preventDefault()
       // Eventni saqlab qolish
       setDeferredPrompt(e)
-      setShowPrompt(true)
+      
+      // Agar foydalanuvchi yopmagan bo'lsa ko'rsatamiz
+      if (!sessionStorage.getItem('pwa_prompt_dismissed')) {
+        setShowPrompt(true)
+      }
     }
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt)
@@ -63,6 +74,12 @@ export default function PWARegister() {
     }
   }, [])
 
+  const handleClose = () => {
+    setShowPrompt(false)
+    setDismissed(true)
+    sessionStorage.setItem('pwa_prompt_dismissed', 'true')
+  }
+
   const handleInstallClick = async () => {
     if (!deferredPrompt) return
 
@@ -75,7 +92,7 @@ export default function PWARegister() {
 
     // Agar qabul qilsa, promptni yashirish
     setDeferredPrompt(null)
-    setShowPrompt(false)
+    handleClose()
   }
 
   // IOS uchun maxsus ko'rsatma (iOS `beforeinstallprompt` ni qo'llab-quvvatlamaydi)
@@ -86,8 +103,9 @@ export default function PWARegister() {
     }
 
     const isInstalled = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true
+    const isDismissed = sessionStorage.getItem('pwa_prompt_dismissed')
 
-    if (isIos() && !isInstalled) {
+    if (isIos() && !isInstalled && !isDismissed) {
       // IOS uchun bir marta ko'rsatma berish
       const hasSeenIosPrompt = localStorage.getItem('fit2_ios_prompt')
       if (!hasSeenIosPrompt) {
@@ -100,7 +118,7 @@ export default function PWARegister() {
     }
   }, [])
 
-  if (isStandalone || !showPrompt) return null
+  if (isStandalone || !showPrompt || dismissed) return null
 
   return (
     <MotionDiv
@@ -134,7 +152,7 @@ export default function PWARegister() {
         
         <div className="flex items-center justify-end gap-3 mt-1">
           <button
-             onClick={() => setShowPrompt(false)}
+             onClick={handleClose}
              className="text-gray-400 hover:text-white text-xs font-medium transition-colors px-2 py-1"
           >
             Yopish
