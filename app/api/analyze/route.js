@@ -46,7 +46,8 @@ export async function POST(request) {
       profile.weight_kg,
       profile.height_cm,
       profile.age,
-      profile.gender
+      profile.gender,
+      profile.activity_level
     )
 
     // AI tahlil (Endi hisob-kitoblar bilan birga yuboramiz)

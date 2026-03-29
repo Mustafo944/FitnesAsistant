@@ -66,9 +66,12 @@ export default function ChatPage() {
         if (res.ok) {
           const data = await res.json()
           if (data.messages && data.messages.length > 0) {
-            // Server javobini saqlang
-            setMessages(data.messages)
-            saveMessagesToLocal(data.messages)
+            const localMsgs = loadMessagesFromLocal()
+            const serverIds = new Set(data.messages.map(m => m.id).filter(Boolean))
+            const onlyLocal = localMsgs.filter(m => !m.id || !serverIds.has(m.id))
+            const merged = [...data.messages, ...onlyLocal].slice(-100)
+            setMessages(merged)
+            saveMessagesToLocal(merged)
           }
           // Agar server bo'sh qaytarsa, localStorage'dagi ma'lumotlar saqlanib qoladi
         }

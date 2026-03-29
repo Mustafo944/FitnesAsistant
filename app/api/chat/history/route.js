@@ -16,7 +16,7 @@ export async function GET(request) {
       .select('id, role, content, created_at')
       .eq('user_id', user.id)
       .order('created_at', { ascending: true }) // Eng eskisidan yangisiga qarab
-      .limit(50) // Oxirgi 50 ta xabarni olishamiz (juda ortib ketmasligi uchun paginate ham qilsa bo'ladi)
+      .limit(100)
 
     if (error) throw error
 

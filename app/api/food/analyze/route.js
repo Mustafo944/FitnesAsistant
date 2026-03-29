@@ -1,6 +1,7 @@
 import { getSupabaseServerClient } from '@/lib/supabase/server'
+import { analyzeFoodWithGemini } from '@/services/ai'
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY
+const genai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
 
 const UZBEK_FOOD_KNOWLEDGE = {
   'osh': { calories: 250, protein: 8, carbs: 35, fats: 8, type: 'tushlik' },
@@ -157,6 +158,10 @@ function generateSuggestions(foods, totalCalories) {
 
 export async function POST(request) {
   const supabase = await getSupabaseServerClient()
+  const { data: { user }, error: authError } = await supabase.auth.getUser()
+  if (authError || !user) {
+    return Response.json({ error: 'Avtorizatsiya kerak' }, { status: 401 })
+  }
   try {
     const formData = await request.formData()
     const file = formData.get('file')
@@ -193,83 +198,25 @@ export async function POST(request) {
         imageUrl = urlData.publicUrl
       }
     } catch (storageError) {
-
+      console.error('Supabase storage xatosi:', storageError?.message || storageError)
     }
 
     let analysisResult = null
 
-    if (OPENAI_API_KEY) {
-      try {
-        const base64Image = Buffer.from(fileBuffer).toString('base64')
-        
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${OPENAI_API_KEY}`,
-          },
-          body: JSON.stringify({
-            model: 'gpt-4o-mini',
-            messages: [
-              {
-                role: 'system',
-                content: `Siz O'zbekistondagi oshpaz va dietolog mutaxassissiz. Quyidagi ovqat rasmini tahlil qiling va JSON formatda javob bering:
-                {
-                  "food_name": "ovqat nomi o'zbek tilida",
-                  "total_calories": raqam,
-                  "macros": {"protein": raqam, "carbs": raqam, "fats": raqam},
-                  "health_score": 1-10,
-                  "health_note": "qisqacha izoh",
-                  "ingredients": [{"name": "nomi", "amount": "miqdori", "calories": raqam}],
-                  "suggestions": ["maslahat1", "maslahat2"],
-                  "alternatives": [{"name": "alternativa nomi", "calories": raqam}]
-                }
-                
-                O'zbek oshpazlik an'analarini hisobga oling.`
-              },
-              {
-                role: 'user',
-                content: [
-                  {
-                    type: 'image_url',
-                    image_url: {
-                      url: `data:image/jpeg;base64,${base64Image}`,
-                      detail: 'low'
-                    }
-                  }
-                ]
-              }
-            ],
-            max_tokens: 500,
-          }),
-        })
-
-        if (response.ok) {
-          const data = await response.json()
-          const content = data.choices?.[0]?.message?.content
-          
-          if (content) {
-            const jsonMatch = content.match(/\{[\s\S]*\}/)
-            if (jsonMatch) {
-              analysisResult = JSON.parse(jsonMatch[0])
-            }
-          }
-        }
-      } catch (aiError) {
-
-      }
+    try {
+      const base64Image = Buffer.from(fileBuffer).toString('base64')
+      const mimeType = file.type || 'image/jpeg'
+      const aiData = await analyzeFoodWithGemini(base64Image, mimeType)
+      analysisResult = aiData
+    } catch (aiError) {
+      console.error('Gemini food analysis xatosi:', aiError?.message || aiError)
     }
 
     if (!analysisResult) {
-      analysisResult = {
-        food_name: 'Ovqat tahlil qilindi',
-        total_calories: 300,
-        macros: { protein: 15, carbs: 35, fats: 12 },
-        health_score: 6,
-        health_note: 'Umumiy tahlil',
-        ingredients: [{ name: 'Ovqat', amount: '1 porsiya', calories: 300 }],
-        suggestions: ['Muntazam ovqatlaning', 'Suv iching'],
-      }
+      return Response.json(
+        { error: "Ovqatni tahlil qilib bo'lmadi. Rasmni yangilang yoki qayta urinib ko'ring." },
+        { status: 422 }
+      )
     }
 
     const mealTypeLabels = {

@@ -164,7 +164,7 @@ export async function GET(request) {
     }
 
     return Response.json({ plan: null }, {
-      headers: { 'Cache-Control': 'private, max-age=10, stale-while-revalidate=60' }
+      headers: { 'Cache-Control': 'private, max-age=600, stale-while-revalidate=1800' }
     })
   } catch (error) {
     console.error('Error fetching personal plan:', error)
@@ -180,11 +180,9 @@ export async function POST(request) {
       return Response.json({ error: 'Aloqada emas' }, { status: 401 })
     }
 
-    const { data: profile } = await supabase
-      .from('profiles')
-      .select('*')
-      .eq('id', user.id)
-      .single()
+    if (!profile) {
+      return Response.json({ error: "Profil topilmadi. Avval profilni to'ldiring." }, { status: 400 })
+    }
 
     const { data: logs } = await supabase
       .from('food_logs')
