@@ -29,19 +29,24 @@ export default function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
   const [user, setUser] = useState(null)
-  const [profile, setProfile] = useState(() => {
-    // SSR-safe: only read localStorage on client
-    if (typeof window !== 'undefined') return getCachedProfile()
-    return null
-  })
+  const [profile, setProfile] = useState(null)
+  const [mounted, setMounted] = useState(false)
   const fetchedRef = useRef(false)
 
   useEffect(() => {
+    setMounted(true)
+    const cached = getCachedProfile()
+    if (cached) {
+      setProfile(cached)
+    }
+  }, [])
+
+  useEffect(() => {
+    // Only run auth subscriber after mount
+    if (!mounted) return
     const sub = onAuthChange((session) => {
       setUser(session?.user || null)
       if (session?.user && (pathname === '/' || pathname === '/onboarding')) {
-        // Profil tekshiruvi server-side middleware'da ham bor
-        // Lekin mijoz tomonida darhol dashboardga otish:
         if (pathname === '/') router.push('/dashboard')
       }
       if (!session?.user) {
@@ -50,7 +55,7 @@ export default function Navbar() {
       }
     })
     return () => sub.unsubscribe()
-  }, [pathname, router])
+  }, [pathname, router, mounted])
 
   // Profile fetch — only once per session, cached in localStorage
   useEffect(() => {
@@ -58,10 +63,8 @@ export default function Navbar() {
 
     // Show cached immediately
     const cached = getCachedProfile()
-    if (cached) {
+    if (cached && !profile) {
       setProfile(cached)
-      fetchedRef.current = true
-      return
     }
 
     fetchedRef.current = true
