@@ -92,7 +92,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div className="flex flex-col h-[calc(100dvh-4rem)] bg-[#0a0a0c]">
+    <div className="flex flex-col h-[calc(100dvh-4rem)] bg-transparent">
       <PageWrapper className="max-w-4xl mx-auto flex-1 flex flex-col p-0 md:p-4 overflow-hidden">
         
         {/* Chat History Area */}

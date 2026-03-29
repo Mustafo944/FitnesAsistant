@@ -1,8 +1,9 @@
-const CACHE_NAME = 'fit2-v2'
+const CACHE_NAME = 'fit2-v4'
 const STATIC_ASSETS = [
   '/',
   '/offline',
   '/manifest.json',
+  '/icons/icon.svg',
 ]
 
 self.addEventListener('install', (event) => {
@@ -27,57 +28,23 @@ self.addEventListener('activate', (event) => {
   self.clients.claim()
 })
 
+// Stale-while-revalidate for assets, Network-first for pages
 self.addEventListener('fetch', (event) => {
   const { request } = event
   const url = new URL(request.url)
 
   if (request.method !== 'GET') return
+  if (!url.origin.includes(location.origin)) return
 
-  if (url.origin === location.origin) {
-    if (url.pathname.startsWith('/_next/static/') || 
-        url.pathname.startsWith('/icons/') ||
-        url.pathname.endsWith('.png') ||
-        url.pathname.endsWith('.svg') ||
-        url.pathname.endsWith('.ico')) {
-      event.respondWith(
-        caches.match(request).then((cachedResponse) => {
-          if (cachedResponse) return cachedResponse
-          return fetch(request).then((response) => {
-            if (response.ok) {
-              const responseClone = response.clone()
-              caches.open(CACHE_NAME).then((cache) => {
-                cache.put(request, responseClone)
-              })
-            }
-            return response
-          })
-        })
-      )
-      return
-    }
-
-    if (url.pathname === '/' || url.pathname.startsWith('/?')) {
-      event.respondWith(
-        fetch(request)
-          .then((response) => {
-            if (response.ok) {
-              const responseClone = response.clone()
-              caches.open(CACHE_NAME).then((cache) => {
-                cache.put(request, responseClone)
-              })
-            }
-            return response
-          })
-          .catch(() => {
-            return caches.match(request).then((cachedResponse) => {
-              if (cachedResponse) return cachedResponse
-              return caches.match('/offline')
-            })
-          })
-      )
-      return
-    }
-
+  // Pages & API routes (Network First)
+  if (
+    request.mode === 'navigate' ||
+    url.pathname === '/' ||
+    url.pathname.startsWith('/chat') ||
+    url.pathname.startsWith('/dashboard') ||
+    url.pathname.startsWith('/api/') ||
+    request.headers.get('accept').includes('text/html')
+  ) {
     event.respondWith(
       fetch(request)
         .then((response) => {
@@ -92,13 +59,32 @@ self.addEventListener('fetch', (event) => {
         .catch(() => {
           return caches.match(request).then((cachedResponse) => {
             if (cachedResponse) return cachedResponse
-            if (url.pathname.match(/\/[a-z]/)) {
-              return caches.match('/')
-            }
             return caches.match('/offline')
           })
         })
     )
+    return
+  }
+
+  // Static assets (Stale While Revalidate)
+  if (
+    url.pathname.startsWith('/_next/static/') ||
+    url.pathname.match(/\.(png|jpg|jpeg|svg|ico|avif|webp|css|js)$/)
+  ) {
+    event.respondWith(
+      caches.match(request).then((cachedResponse) => {
+        const fetchPromise = fetch(request).then((networkResponse) => {
+          if (networkResponse.ok) {
+            caches.open(CACHE_NAME).then((cache) => {
+              cache.put(request, networkResponse.clone())
+            })
+          }
+          return networkResponse
+        })
+        return cachedResponse || fetchPromise
+      })
+    )
+    return
   }
 })
 
@@ -111,9 +97,7 @@ self.addEventListener('push', (event) => {
     icon: '/icons/icon-192x192.png',
     badge: '/icons/icon-72x72.png',
     vibrate: [200, 100, 200],
-    data: {
-      url: data.url || '/',
-    },
+    data: { url: data.url || '/' },
   }
 
   event.waitUntil(
@@ -127,9 +111,7 @@ self.addEventListener('notificationclick', (event) => {
   event.waitUntil(
     self.clients.matchAll({ type: 'window' }).then((clients) => {
       for (const client of clients) {
-        if (client.url === url && 'focus' in client) {
-          return client.focus()
-        }
+        if (client.url === url && 'focus' in client) return client.focus()
       }
       return self.clients.openWindow(url)
     })

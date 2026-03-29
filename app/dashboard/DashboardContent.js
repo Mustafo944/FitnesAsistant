@@ -61,10 +61,10 @@ export default function DashboardContent({ initialProfile, initialLatestAnalysis
         tip = "Tana holatingiz juda yaxshi!"
       } else if (bmi < 30) {
         focus = "Ortiqcha vazn"
-        tip = "Tana yog' foizini kamaytirish bo'g'inlari (ayniqsa tizza) uchun juda foydali."
+        tip = "Tana yog' foizini kamaytirish bo'g'imlar (ayniqsa tizza) uchun juda foydali."
       } else {
         focus = "Semizlik holati"
-        tip = "Bo'g'inlarga (tizza, bel) og'irlik tushmasligi uchun vazn kamaytirish shart."
+        tip = "Bo'g'imlarga (tizza, bel) og'irlik tushmasligi uchun vazn kamaytirish shart."
       }
       rawSummary = `${focus} aniqlandi. ${tip} Kunlik ${tdee} kcal (saqlash) / ${tdee - 500} kcal (ozish) tavsiya etiladi.`
     }
