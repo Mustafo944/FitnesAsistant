@@ -45,15 +45,11 @@ export async function POST(request) {
     
     aiPlan.calculated_maintenance = calories.maintenance
 
-    // Rejalarni bazaga ham saqlab qo'yishimiz mumkin, 
-    // masalan plans degan jadval bo'lsa. Ammo hozircha faqat generatsiya qilib qaytarib beramiz.
-    // user har safar bosganda yangi reja chiqadi.
-    
-    // Yoki "profiles" ga jsonb qilib saqlashimiz mumkin. Keling hozircha profiles ga saqlaymiz, 
-    // to'g'ridan-to'g'ri chaqirish oson bo'lishi u-n.
+    const planToSave = { ...aiPlan, generated_at: new Date().toISOString() }
+
     const { error: updateError } = await supabase
       .from('profiles')
-      .update({ current_plan: aiPlan })
+      .update({ current_plan: planToSave })
       .eq('id', user.id)
 
     if (updateError) {
@@ -61,7 +57,7 @@ export async function POST(request) {
       return Response.json({ message: "Rejani saqlashda xatolik: " + updateError.message }, { status: 500 })
     }
 
-    return Response.json({ plan: aiPlan })
+    return Response.json({ plan: planToSave })
   } catch (err) {
     console.error('Plan generation error:', err)
     return Response.json(
@@ -91,5 +87,14 @@ export async function GET(request) {
     return Response.json({ plan: null, error: profileError.message }, { status: 200 })
   }
 
-  return Response.json({ plan: profile?.current_plan || null })
+  const plan = profile?.current_plan || null
+  if (plan?.generated_at) {
+    const ageMs = Date.now() - new Date(plan.generated_at).getTime()
+    const sevenDays = 7 * 24 * 60 * 60 * 1000
+    if (ageMs < sevenDays) {
+      return Response.json({ plan, cached: true })
+    }
+    return Response.json({ plan: null, needsRefresh: true })
+  }
+  return Response.json({ plan: null })
 }

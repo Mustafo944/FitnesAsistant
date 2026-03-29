@@ -3,20 +3,15 @@ import { getSupabaseServerClient } from '@/lib/supabase/server'
 export async function GET(request) {
   const supabase = await getSupabaseServerClient()
   try {
-    const { searchParams } = new URL(request.url)
-    const userId = searchParams.get('userId')
-
-    if (!userId) {
-      const { data: { user } } = await supabase.auth.getUser()
-      if (!user) {
-        return Response.json({ logs: [] })
-      }
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) {
+      return Response.json({ logs: [] }, { status: 401 })
     }
 
     const { data: logs, error } = await supabase
       .from('food_logs')
       .select('*')
-      .eq('user_id', userId || (await supabase.auth.getUser()).data.user?.id)
+      .eq('user_id', user.id)
       .order('created_at', { ascending: false })
       .limit(50)
 
@@ -40,8 +35,15 @@ export async function POST(request) {
     const body = await request.json()
     const { meal_type, image_url, analysis } = body
 
-    if (!meal_type || !analysis) {
-      return Response.json({ error: 'Ma&apos;lumot to&apos;liq emas' }, { status: 400 })
+    const VALID_MEAL_TYPES = ['ertalabki_nonushta', 'tushlik', 'kechkiqlik', 'kechki_ovqat']
+    if (!meal_type || !VALID_MEAL_TYPES.includes(meal_type)) {
+      return Response.json({ error: "Noto'g'ri meal_type" }, { status: 400 })
+    }
+    if (!analysis) {
+      return Response.json({ error: "Ma'lumot to'liq emas" }, { status: 400 })
+    }
+    if (JSON.stringify(analysis).length > 10000) {
+      return Response.json({ error: 'Tahlil hajmi juda katta' }, { status: 400 })
     }
 
     const today = new Date().toISOString().split('T')[0]

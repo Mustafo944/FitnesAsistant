@@ -35,10 +35,10 @@ export async function GET(request) {
       }
     )
 
+    const { data: { user }, error } = await supabase.auth.exchangeCodeForSession(code)
     let activeUser = user
 
     if (error) {
-      // If code was already exchanged on a duplicate network request, the session might already exist
       const { data: { user: existingUser } } = await supabase.auth.getUser()
       if (existingUser) {
         activeUser = existingUser

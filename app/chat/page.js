@@ -95,6 +95,7 @@ export default function ChatPage() {
 
     const history = messages
       .filter(m => m.role !== 'error')
+      .slice(-20)
       .map(m => ({ role: m.role, content: m.content }))
 
     const newUserMessage = { id: Date.now(), role: 'user', content: userMsg }

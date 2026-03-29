@@ -13,6 +13,7 @@ export async function GET(request) {
       .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false })
+      .limit(200)
 
     if (!logs || logs.length === 0) {
       return Response.json({ summary: null })
@@ -20,8 +21,11 @@ export async function GET(request) {
 
     const uniqueDays = [...new Set(logs.map(l => l.date))]
     const totalDays = uniqueDays.length
-    const avgCalories = logs.reduce((sum, l) => sum + (l.analysis?.total_calories || 0), 0) / logs.length
     const totalCalories = logs.reduce((sum, l) => sum + (l.analysis?.total_calories || 0), 0)
+    const dailyTotals = uniqueDays.map(day =>
+      logs.filter(l => l.date === day).reduce((s, l) => s + (l.analysis?.total_calories || 0), 0)
+    )
+    const avgCalories = dailyTotals.reduce((a, b) => a + b, 0) / (dailyTotals.length || 1)
 
     const highCalorieFoods = logs
       .filter(l => l.analysis?.total_calories > 400)

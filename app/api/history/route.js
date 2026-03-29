@@ -59,6 +59,7 @@ export async function GET(request) {
     .select('id, created_at, height_cm, weight_kg, result')
     .eq('user_id', user.id)
     .order('created_at', { ascending: false })
+    .limit(50)
 
   if (error) {
     return Response.json(

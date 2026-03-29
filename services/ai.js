@@ -82,7 +82,12 @@ Vazifa: Ushbu rasmni va aniq hisob-kitoblarimizni tahlil qilib, foydalanuvchinin
     throw new Error("AI javobidan JSON ajratib bo'lmadi")
   }
 
-  return JSON.parse(jsonMatch[0])
+  try {
+    return JSON.parse(jsonMatch[0])
+  } catch (e) {
+    console.error('AI JSON parse xatosi:', jsonMatch[0].slice(0, 300))
+    throw new Error("AI javobini qayta ishlashda xatolik yuz berdi")
+  }
 }
 
 export async function generatePlanWithGemini(metrics) {
@@ -180,7 +185,12 @@ ${metrics.gender === 'male' ?
     throw new Error("AI javobidan JSON ajratib bo'lmadi")
   }
 
-  return JSON.parse(jsonMatch[0])
+  try {
+    return JSON.parse(jsonMatch[0])
+  } catch (e) {
+    console.error('AI JSON parse xatosi:', jsonMatch[0].slice(0, 300))
+    throw new Error("AI javobini qayta ishlashda xatolik yuz berdi")
+  }
 }
 
 export async function chatWithGemini(message, history, profile) {

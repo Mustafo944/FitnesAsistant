@@ -48,7 +48,6 @@ self.addEventListener('fetch', (event) => {
     url.pathname === '/' ||
     url.pathname.startsWith('/chat') ||
     url.pathname.startsWith('/dashboard') ||
-    url.pathname.startsWith('/api/') ||
     request.headers.get('accept').includes('text/html')
   ) {
     event.respondWith(

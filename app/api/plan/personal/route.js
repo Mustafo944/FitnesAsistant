@@ -77,30 +77,10 @@ function generateWeeklyPlan(avgCalories, highCalorieFoods, commonFoods) {
 
   for (let i = 0; i < 7; i++) {
     const dayMeals = [
-      {
-        type: 'Nonushta',
-        food: shuffle(UZBEK_FOODS.breakfast)[0].food,
-        calories: dailyBudget.breakfast,
-        note: shuffle(UZBEK_FOODS.breakfast)[0].note,
-      },
-      {
-        type: 'Tushlik',
-        food: shuffle(UZBEK_FOODS.lunch)[0].food,
-        calories: dailyBudget.lunch,
-        note: shuffle(UZBEK_FOODS.lunch)[0].note,
-      },
-      {
-        type: 'Kechkiqlik',
-        food: shuffle(UZBEK_FOODS.snack)[0].food,
-        calories: dailyBudget.snack,
-        note: shuffle(UZBEK_FOODS.snack)[0].note,
-      },
-      {
-        type: 'Kechki ovqat',
-        food: shuffle(UZBEK_FOODS.dinner)[0].food,
-        calories: dailyBudget.dinner,
-        note: shuffle(UZBEK_FOODS.dinner)[0].note,
-      },
+      (() => { const p = shuffle(UZBEK_FOODS.breakfast)[0]; return { type: 'Nonushta',    food: p.food, calories: p.calories, note: p.note } })(),
+      (() => { const p = shuffle(UZBEK_FOODS.lunch)[0];     return { type: 'Tushlik',      food: p.food, calories: p.calories, note: p.note } })(),
+      (() => { const p = shuffle(UZBEK_FOODS.snack)[0];     return { type: 'Kechkiqlik',   food: p.food, calories: p.calories, note: p.note } })(),
+      (() => { const p = shuffle(UZBEK_FOODS.dinner)[0];    return { type: 'Kechki ovqat', food: p.food, calories: p.calories, note: p.note } })(),
     ]
 
     weeklyPlan.push({
@@ -200,7 +180,11 @@ export async function POST(request) {
       return Response.json({ error: 'Aloqada emas' }, { status: 401 })
     }
 
-    const { data: { user: profile } } = await supabase.auth.getUser()
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single()
 
     const { data: logs } = await supabase
       .from('food_logs')
@@ -217,7 +201,10 @@ export async function POST(request) {
       return Response.json({ error: `${3 - uniqueDays.length} kun qoldi. Kamida 3 kun ovqat qo'shing.` }, { status: 400 })
     }
 
-    const avgCalories = logs.reduce((sum, l) => sum + (l.analysis?.total_calories || 0), 0) / uniqueDays.length
+    const dailyTotals = uniqueDays.map(day =>
+      logs.filter(l => l.date === day).reduce((s, l) => s + (l.analysis?.total_calories || 0), 0)
+    )
+    const avgCalories = dailyTotals.reduce((a, b) => a + b, 0) / (dailyTotals.length || 1)
 
     const highCalorieFoods = logs
       .filter(l => l.analysis?.total_calories > 400)

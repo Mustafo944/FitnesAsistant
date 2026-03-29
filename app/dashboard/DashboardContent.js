@@ -69,7 +69,19 @@ export default function DashboardContent({ initialProfile, initialLatestAnalysis
       rawSummary = `${focus} aniqlandi. ${tip} Kunlik ${tdee} kcal (saqlash) / ${tdee - 500} kcal (ozish) tavsiya etiladi.`
     }
 
-    return rawSummary.replaceAll('&apos;', "'").replaceAll('&quot;', '"').replaceAll('&amp;', '&')
+    try {
+      return decodeURIComponent(
+        rawSummary
+          .replaceAll('&apos;', "'")
+          .replaceAll('&quot;', '"')
+          .replaceAll('&amp;', '&')
+          .replaceAll('&#39;', "'")
+          .replaceAll('&lt;', '<')
+          .replaceAll('&gt;', '>')
+      )
+    } catch {
+      return rawSummary
+    }
   }, [latestAnalysis, bmi, tdee, profile])
 
   if (!profile) {

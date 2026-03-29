@@ -154,35 +154,6 @@ function generateSuggestions(foods, totalCalories) {
   return suggestions.slice(0, 3)
 }
 
-function generateSuggestionsRaw(foods, totalCalories) {
-  const suggestions = []
-  
-  if (totalCalories > 400) {
-    suggestions.push('Kamroq kaloriya uchun porsiyaning yarmisini yeying')
-    suggestions.push("Yonidagi sabzavotlar bilan iste'mol qiling")
-  }
-
-  const hasBread = foods.some(f => f.name?.toLowerCase().includes('non'))
-  if (hasBread) {
-    suggestions.push("Non o'rniga sabzi yoki bodring iste'mol qiling")
-  }
-
-  const hasCola = foods.some(f => f.name?.toLowerCase().includes('cola') || f.name?.toLowerCase().includes('pepsi'))
-  if (hasCola) {
-    suggestions.push("Shirin ichimlik o'rniga suv yoki choy iching")
-  }
-
-  const hasFastFood = foods.some(f => f.name?.toLowerCase().includes('pizza') || f.name?.toLowerCase().includes('burger') || f.name?.toLowerCase().includes('fransi'))
-  if (hasFastFood) {
-    suggestions.push("Fast food o'rniga uyda tayyorlangan taom afzalroq")
-  }
-
-  if (suggestions.length === 0) {
-    suggestions.push('Ovqatlanish jadvaliga rioya qiling')
-  }
-
-  return suggestions.slice(0, 3)
-}
 
 export async function POST(request) {
   const supabase = await getSupabaseServerClient()
@@ -193,6 +164,14 @@ export async function POST(request) {
 
     if (!file) {
       return Response.json({ error: 'Rasm yuklanmagan' }, { status: 400 })
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+    if (!allowedTypes.includes(file.type)) {
+      return Response.json({ error: 'Faqat rasm fayl yuklang (jpg, png, webp)' }, { status: 400 })
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      return Response.json({ error: 'Rasm hajmi 5MB dan oshmasin' }, { status: 400 })
     }
 
     let imageUrl = null
@@ -214,7 +193,7 @@ export async function POST(request) {
         imageUrl = urlData.publicUrl
       }
     } catch (storageError) {
-      console.log('Storage upload skipped, using local processing')
+
     }
 
     let analysisResult = null
@@ -277,7 +256,7 @@ export async function POST(request) {
           }
         }
       } catch (aiError) {
-        console.log('AI analysis skipped, using fallback')
+
       }
     }
 

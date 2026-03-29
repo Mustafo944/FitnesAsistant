@@ -86,6 +86,9 @@ export default function SettingsPage() {
 
       setSuccess(true)
       queryClient.invalidateQueries({ queryKey: ['profile'] })
+      queryClient.invalidateQueries({ queryKey: ['food-summary'] })
+      queryClient.invalidateQueries({ queryKey: ['personal-plan'] })
+      queryClient.invalidateQueries({ queryKey: ['progress-history'] })
       setTimeout(() => setSuccess(false), 3000)
     } catch (err) {
       setError(err.message)
