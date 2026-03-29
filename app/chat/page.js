@@ -185,7 +185,7 @@ export default function ChatPage() {
                   {/* User/AI Label */}
                   <div className={`flex items-center gap-2 px-1 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
                     <span className={`text-[10px] font-black uppercase tracking-[0.2em] opacity-40 ${msg.role === 'user' ? 'text-violet-400' : 'text-gray-400'}`}>
-                      {msg.role === 'user' ? 'Siz' : 'Fit2 Pro'}
+                      {msg.role === 'user' ? 'Siz' : 'FitnesAsistant'}
                     </span>
                   </div>
 

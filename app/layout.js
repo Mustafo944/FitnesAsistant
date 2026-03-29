@@ -12,13 +12,13 @@ const inter = Inter({
 })
 
 export const metadata = {
-  title: 'Fit2 - Fitness AI',
+  title: 'FitnesAsistant - Fitness AI',
   description: "AI yordamida shaxsiy fitness rejangizni oling",
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
-    title: 'Fit2',
+    title: 'FitnesAsistant',
   },
   icons: {
     icon: '/icons/icon.svg',
@@ -26,7 +26,7 @@ export const metadata = {
   },
   appleTouchIcon: '/icons/icon.svg',
   openGraph: {
-    title: 'Fit2 - Fitness AI',
+    title: 'FitnesAsistant - Fitness AI',
     description: "AI yordamida shaxsiy fitness rejangizni oling",
     type: 'website',
   },

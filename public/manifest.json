@@ -1,6 +1,6 @@
 {
-  "name": "Fit2 - Fitness AI",
-  "short_name": "Fit2",
+  "name": "FitnesAsistant - Fitness AI",
+  "short_name": "FitnesAsistant",
   "description": "AI yordamida shaxsiy fitness rejangizni oling",
   "start_url": "/dashboard",
   "display": "standalone",

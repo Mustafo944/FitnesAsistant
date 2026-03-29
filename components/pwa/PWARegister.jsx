@@ -116,7 +116,7 @@ export default function PWARegister() {
              </svg>
           </div>
           <div>
-            <h4 className="text-white text-sm font-bold leading-tight">Fit2 ilovasini o'rnating</h4>
+            <h4 className="text-white text-sm font-bold leading-tight">FitnesAsistant ilovasini o'rnating</h4>
             <p className="text-gray-400 text-[11px] leading-tight mt-0.5">Telefoningiz ekranida ilova sifatida oching! Offline ishlash imkonini beradi.</p>
           </div>
         </div>
