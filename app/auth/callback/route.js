@@ -35,18 +35,24 @@ export async function GET(request) {
       }
     )
 
-    const { data: { user }, error } = await supabase.auth.exchangeCodeForSession(code)
+    let activeUser = user
 
     if (error) {
-      console.error('Session exchange error:', error)
-      return NextResponse.redirect(new URL('/?error=session_failed', requestUrl.origin))
+      // If code was already exchanged on a duplicate network request, the session might already exist
+      const { data: { user: existingUser } } = await supabase.auth.getUser()
+      if (existingUser) {
+        activeUser = existingUser
+      } else {
+        console.error('Session exchange error:', error)
+        return NextResponse.redirect(new URL('/?error=session_failed', requestUrl.origin))
+      }
     }
 
-    if (user) {
+    if (activeUser) {
       const { data: profile } = await supabase
         .from('profiles')
         .select('onboarded')
-        .eq('id', user.id)
+        .eq('id', activeUser.id)
         .single()
 
       if (!profile?.onboarded) {
