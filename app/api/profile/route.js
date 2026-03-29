@@ -1,6 +1,8 @@
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { validateProfileData } from '@/lib/validation'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET() {
   const supabase = await getSupabaseServerClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -19,7 +21,11 @@ export async function GET() {
     return Response.json({ message: 'Profil topilmadi' }, { status: 404 })
   }
 
-  return Response.json(data)
+  return Response.json(data, {
+    headers: {
+      'Cache-Control': 'private, max-age=60, stale-while-revalidate=300'
+    }
+  })
 }
 
 export async function POST(request) {

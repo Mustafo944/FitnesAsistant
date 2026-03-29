@@ -1,5 +1,13 @@
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 
+export const dynamic = 'force-dynamic'
+
+const cacheHeaders = {
+  headers: {
+    'Cache-Control': 'private, max-age=60, stale-while-revalidate=300'
+  }
+}
+
 export async function GET(request) {
   const supabase = await getSupabaseServerClient()
   const { data: { user }, error: authError } = await supabase.auth.getUser()
@@ -42,7 +50,7 @@ export async function GET(request) {
       return Response.json({ message: 'Tahlil topilmadi' }, { status: 404 })
     }
 
-    return Response.json(data)
+    return Response.json(data, cacheHeaders)
   }
 
   // Barcha tahlillarni olish
@@ -59,5 +67,5 @@ export async function GET(request) {
     )
   }
 
-  return Response.json(data || [])
+  return Response.json(data || [], cacheHeaders)
 }

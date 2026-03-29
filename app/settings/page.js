@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import PageWrapper from '@/components/layout/PageWrapper'
 import Card from '@/components/ui/Card'
 import Input from '@/components/ui/Input'
@@ -11,8 +11,7 @@ import Spinner from '@/components/ui/Spinner'
 import { GENDER_OPTIONS, GOAL_OPTIONS, ACTIVITY_OPTIONS } from '@/lib/constants'
 
 export default function SettingsPage() {
-  const router = useRouter()
-  const [loading, setLoading] = useState(true)
+  const queryClient = useQueryClient()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState(false)
@@ -27,26 +26,30 @@ export default function SettingsPage() {
     activity_level: 'o_rtacha',
   })
 
+  const { data: profileData, isLoading } = useQuery({
+    queryKey: ['profile'],
+    queryFn: async () => {
+      const res = await fetch('/api/profile')
+      if (!res.ok) return null
+      return res.json()
+    },
+    staleTime: 5 * 60 * 1000,
+  })
+
   useEffect(() => {
-    fetch('/api/profile')
-      .then(res => res.ok ? res.json() : null)
-      .then(data => {
-        if (data) {
-          setForm({
-            first_name: data.first_name || data.full_name?.split(' ')[0] || '',
-            last_name: data.last_name || data.full_name?.split(' ').slice(1).join(' ') || '',
-            height: data.height_cm?.toString() || '',
-            weight: data.weight_kg?.toString() || '',
-            age: data.age?.toString() || '',
-            gender: data.gender || '',
-            goal: data.goal || 'forma_saqlash',
-            activity_level: data.activity_level || 'o_rtacha',
-          })
-        }
+    if (profileData) {
+      setForm({
+        first_name: profileData.first_name || profileData.full_name?.split(' ')[0] || '',
+        last_name: profileData.last_name || profileData.full_name?.split(' ').slice(1).join(' ') || '',
+        height: profileData.height_cm?.toString() || '',
+        weight: profileData.weight_kg?.toString() || '',
+        age: profileData.age?.toString() || '',
+        gender: profileData.gender || '',
+        goal: profileData.goal || 'forma_saqlash',
+        activity_level: profileData.activity_level || 'o_rtacha',
       })
-      .catch(() => {})
-      .finally(() => setLoading(false))
-  }, [])
+    }
+  }, [profileData])
 
   const handleChange = (e) => {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
@@ -82,6 +85,7 @@ export default function SettingsPage() {
       }
 
       setSuccess(true)
+      queryClient.invalidateQueries({ queryKey: ['profile'] })
       setTimeout(() => setSuccess(false), 3000)
     } catch (err) {
       setError(err.message)
@@ -90,7 +94,7 @@ export default function SettingsPage() {
     }
   }
 
-  if (loading) {
+  if (isLoading) {
     return (
       <PageWrapper className="flex items-center justify-center min-h-[60vh]">
         <Spinner size="lg" />

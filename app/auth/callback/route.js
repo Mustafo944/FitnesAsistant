@@ -1,13 +1,10 @@
-import { NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
+import { NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
 
-export const dynamic = 'force-dynamic'
-
 export async function GET(request) {
-  const { searchParams, origin } = new URL(request.url)
-  const code = searchParams.get('code')
-  const next = searchParams.get('next') ?? '/dashboard'
+  const requestUrl = new URL(request.url)
+  const code = requestUrl.searchParams.get('code')
 
   if (code) {
     const cookieStore = await cookies()
@@ -24,32 +21,30 @@ export async function GET(request) {
               cookiesToSet.forEach(({ name, value, options }) =>
                 cookieStore.set(name, value, options)
               )
-            } catch (error) {
-              // Server Components ishlayotganda ignore qilish
+            } catch {
+              // Ignored
             }
           },
         },
       }
     )
 
-    const { error } = await supabase.auth.exchangeCodeForSession(code)
-    if (!error) {
-      // Netlify varch-da ishlashi uchun origin ishlatamiz
-      const forwardedHost = request.headers.get('x-forwarded-host') 
-      const isLocalEnv = process.env.NODE_ENV === 'development'
-      if (isLocalEnv) {
-        return NextResponse.redirect(`${origin}${next}`)
-      } else if (forwardedHost) {
-        // Netlify branch url (main--... yoki deploy-preview)
-        return NextResponse.redirect(`https://${forwardedHost}${next}`)
-      } else {
-        return NextResponse.redirect(`${origin}${next}`)
+    const { data: { user }, error } = await supabase.auth.exchangeCodeForSession(code)
+
+    if (!error && user) {
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('onboarded')
+        .eq('id', user.id)
+        .single()
+
+      if (!profile?.onboarded) {
+        return NextResponse.redirect(new URL('/onboarding', requestUrl.origin))
       }
-    } else {
-      console.error('Callback error:', error)
-      return NextResponse.redirect(`${origin}/?error=${encodeURIComponent('Kirish xatosi: ' + error.message)}`)
+
+      return NextResponse.redirect(new URL('/dashboard', requestUrl.origin))
     }
   }
 
-  return NextResponse.redirect(`${origin}/?error=NoCode`)
+  return NextResponse.redirect(new URL('/', requestUrl.origin))
 }

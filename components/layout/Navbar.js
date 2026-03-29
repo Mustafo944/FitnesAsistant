@@ -1,6 +1,7 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { signOut, onAuthChange } from '@/services/auth'
@@ -48,11 +49,13 @@ export default function Navbar() {
         {/* Chap: Avatar + Ism */}
         <div className="flex items-center gap-3">
           {avatarUrl ? (
-            <img
+            <Image
               src={avatarUrl}
               alt="Avatar"
-              className="w-8 h-8 rounded-full border border-white/10"
-              referrerPolicy="no-referrer"
+              width={32}
+              height={32}
+              className="w-8 h-8 rounded-full border border-white/10 object-cover"
+              unoptimized
             />
           ) : (
             <div className="w-8 h-8 rounded-full bg-violet-600/30 border border-violet-500/30 flex items-center justify-center text-sm font-bold text-violet-300">

@@ -1,12 +1,14 @@
 'use client'
 
-import { motion } from 'framer-motion'
+import dynamic from 'next/dynamic'
 import { useState, useRef, useEffect } from 'react'
 import PageWrapper from '@/components/layout/PageWrapper'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
-import ReactMarkdown from 'react-markdown'
 import Spinner from '@/components/ui/Spinner'
+
+const MotionDiv = dynamic(() => import('@/components/ui/MotionDiv'), { ssr: false })
+const MarkdownRenderer = dynamic(() => import('@/components/ui/MarkdownRenderer'), { ssr: false })
 
 export default function ChatPage() {
   const [messages, setMessages] = useState([])
@@ -134,7 +136,7 @@ export default function ChatPage() {
           )}
           
           {messages.map((msg, i) => (
-            <motion.div 
+            <MotionDiv 
               key={msg.id || i}
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
@@ -153,18 +155,16 @@ export default function ChatPage() {
                     : 'bg-white/5 backdrop-blur-xl text-gray-200 rounded-bl-sm border border-white/10'
                 }`}>
                   {msg.role === 'model' ? (
-                    <div className="prose prose-invert max-w-none text-sm leading-relaxed prose-p:my-1 prose-headings:my-2 prose-ul:my-1 prose-li:my-0">
-                      <ReactMarkdown>{msg.content}</ReactMarkdown>
-                    </div>
+                    <MarkdownRenderer content={msg.content} />
                   ) : (
                     <p className="text-sm font-medium">{msg.content}</p>
                   )}
                 </div>
               )}
-            </motion.div>
+            </MotionDiv>
           ))}
           {loading && (
-            <motion.div 
+            <MotionDiv 
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               className="flex justify-start"
@@ -173,7 +173,7 @@ export default function ChatPage() {
                 <Spinner className="w-4 h-4 text-violet-400" />
                 <span className="text-sm font-medium text-gray-400">Yozmoqda...</span>
               </div>
-            </motion.div>
+            </MotionDiv>
           )}
           <div ref={messagesEndRef} />
         </div>

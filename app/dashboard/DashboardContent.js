@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import Link from 'next/link'
 import PageWrapper from '@/components/layout/PageWrapper'
 import Card from '@/components/ui/Card'
@@ -15,6 +15,13 @@ import { calculateBMI, getBMICategory, calculateCalories } from '@/lib/calculati
 export default function DashboardContent({ initialProfile, initialLatestAnalysis }) {
   const [profile] = useState(initialProfile)
   const [latestAnalysis] = useState(initialLatestAnalysis)
+  const [dateString, setDateString] = useState('')
+
+  useEffect(() => {
+    const d = new Date()
+    const months = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr']
+    setDateString(`${d.getFullYear()} · ${d.getDate()}-${months[d.getMonth()]}`)
+  }, [])
 
   const displayName = profile?.first_name || profile?.full_name?.split(' ')[0] || 'Foydalanuvchi'
 
@@ -31,32 +38,29 @@ export default function DashboardContent({ initialProfile, initialLatestAnalysis
     )
   }
 
-  // BMI hisoblash
-  const bmi = calculateBMI(profile.weight_kg || 70, profile.height_cm || 170)
-  const bmiCategory = getBMICategory(bmi)
+  const bmi = useMemo(() => calculateBMI(profile.weight_kg || 70, profile.height_cm || 170), [profile.weight_kg, profile.height_cm])
+  const bmiCategory = useMemo(() => getBMICategory(bmi), [bmi])
   const bmiStatus = bmiCategory.label
 
-  // Kaloriya
-  const { maintenance: tdee } = calculateCalories(
-    profile.weight_kg || 70,
-    profile.height_cm || 170,
-    profile.age || 25,
-    profile.gender || 'male',
-    profile.activity_level
-  )
+  const tdee = useMemo(() => {
+    const result = calculateCalories(
+      profile.weight_kg || 70,
+      profile.height_cm || 170,
+      profile.age || 25,
+      profile.gender || 'male',
+      profile.activity_level
+    )
+    return result.maintenance
+  }, [profile.weight_kg, profile.height_cm, profile.age, profile.gender, profile.activity_level])
 
-  // Smart Local/Hybrid Analysis Engine
-  const getSmartAnalysis = () => {
-    // 1. Agar AI tahlili bo'lsa (Gibrid rejim)
+  const smartSummary = useMemo(() => {
     if (latestAnalysis?.result?.summary) {
       return latestAnalysis.result.summary
     }
 
-    // 2. Aks holda (Local rejim)
     let focus = ''
     let tip = ''
     
-    // BMI Status Logic
     if (bmi < 18.5) {
       focus = "Vazn yetishmovchiligi"
       tip = "Sizga mushak massasini oshirish (bulking) tavsiya etiladi."
@@ -71,19 +75,8 @@ export default function DashboardContent({ initialProfile, initialLatestAnalysis
       tip = "Bo'g'inlarga (tizza, bel) og'irlik tushmasligi uchun yuk kamaytirilishi shart."
     }
 
-    const calorieContext = `Kunlik ${tdee} kcal (saqlash) / ${tdee - 500} kcal (ozish) tavsiya etiladi.`
-    return `${focus} aniqlandi. ${tip} ${calorieContext}`
-  }
-
-  const smartSummary = getSmartAnalysis()
-
-  const [dateString, setDateString] = useState('')
-
-  useEffect(() => {
-    const d = new Date()
-    const months = ['yanvar', 'fevral', 'mart', 'aprel', 'may', 'iyun', 'iyul', 'avgust', 'sentyabr', 'oktyabr', 'noyabr', 'dekabr']
-    setDateString(`${d.getFullYear()} · ${d.getDate()}-${months[d.getMonth()]}`)
-  }, [])
+    return `${focus} aniqlandi. ${tip} Kunlik ${tdee} kcal (saqlash) / ${tdee - 500} kcal (ozish) tavsiya etiladi.`
+  }, [latestAnalysis, bmi, tdee])
 
   return (
     <PageWrapper className="max-w-2xl mx-auto py-10 px-4 pb-24">

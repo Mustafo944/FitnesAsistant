@@ -3,6 +3,7 @@ import './globals.css'
 import Navbar from '@/components/layout/Navbar'
 import BottomNav from '@/components/layout/BottomNav'
 import PageTransition from '@/components/layout/PageTransition'
+import Providers from './providers'
 
 const inter = Inter({ subsets: ['latin', 'cyrillic'] })
 
@@ -16,6 +17,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="uz">
       <body className={`${inter.className} relative min-h-screen bg-[#08001a] text-white`}>
+        <Providers>
         {/* Full Screen Galaxy Background */}
         <div className="fixed inset-0 z-0 pointer-events-none">
           <div className="absolute inset-0 bg-[#08001a]" />
@@ -34,6 +36,7 @@ export default function RootLayout({ children }) {
           </main>
           <BottomNav />
         </div>
+        </Providers>
       </body>
     </html>
   )

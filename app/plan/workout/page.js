@@ -1,49 +1,44 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import PageWrapper from '@/components/layout/PageWrapper'
 import Card from '@/components/ui/Card'
 import Button from '@/components/ui/Button'
 import Spinner from '@/components/ui/Spinner'
 
 export default function WorkoutPage() {
-  const [loading, setLoading] = useState(false)
-  const [fetching, setFetching] = useState(true)
-  const [plan, setPlan] = useState(null)
+  const queryClient = useQueryClient()
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    fetchExistingPlan()
-  }, [])
-
-  const fetchExistingPlan = async () => {
-    try {
-      setFetching(true)
+  const { data: planData, isLoading: fetching } = useQuery({
+    queryKey: ['plan'],
+    queryFn: async () => {
       const res = await fetch('/api/plan')
-      if (res.ok) {
-        const data = await res.json()
-        if (data.plan) setPlan(data.plan)
-      }
-    } catch (err) {
-      console.error(err)
-    } finally {
-      setFetching(false)
-    }
-  }
-
-  const handleGenerate = async () => {
-    setLoading(true)
-    setError('')
-    try {
-      const res = await fetch('/api/plan', { method: 'POST' })
+      if (!res.ok) return null
       const data = await res.json()
-      if (!res.ok) throw new Error(data.message || 'Xatolik')
-      setPlan(data.plan)
-    } catch (err) {
-      setError(err.message)
-    } finally {
-      setLoading(false)
-    }
+      return data.plan
+    },
+    staleTime: 10 * 60 * 1000,
+  })
+
+  const generateMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch('/api/plan', { method: 'POST' })
+      if (!res.ok) {
+        const data = await res.json()
+        throw new Error(data.message || 'Xatolik')
+      }
+      return res.json()
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(['plan'], data.plan)
+    },
+  })
+
+  const handleGenerate = () => {
+    setError('')
+    generateMutation.mutate()
   }
 
   if (fetching) {
@@ -69,11 +64,11 @@ export default function WorkoutPage() {
         </div>
         <Button
           onClick={handleGenerate}
-          loading={loading}
-          variant={plan ? 'secondary' : 'primary'}
+          loading={generateMutation.isPending}
+          variant={planData ? 'secondary' : 'primary'}
           className="shadow-[0_0_20px_rgba(59,130,246,0.3)]"
         >
-          {plan ? 'Yangilash' : 'AI Mashq tuzish'}
+          {planData ? 'Yangilash' : 'AI Mashq tuzish'}
         </Button>
       </div>
 
@@ -84,7 +79,7 @@ export default function WorkoutPage() {
       )}
 
       {/* Loading State */}
-      {loading && (
+      {generateMutation.isPending && (
         <Card glass neon="blue" className="p-12 text-center">
           <Spinner size="lg" className="mb-4 text-blue-400 mx-auto" />
           <p className="text-gray-400 text-sm">AI sizga individual mashq rejasi tuzyapti...</p>
@@ -92,7 +87,7 @@ export default function WorkoutPage() {
       )}
 
       {/* Empty State */}
-      {!plan && !loading && (
+      {!planData && !generateMutation.isPending && (
         <Card glass className="p-12 text-center border border-white/5">
           <span className="text-5xl block mb-4">🏋️</span>
           <h3 className="text-xl font-bold text-white mb-2">Mashg&apos;ulot rejasi mavjud emas</h3>
@@ -103,7 +98,7 @@ export default function WorkoutPage() {
       )}
 
       {/* Plan Content */}
-      {plan && !loading && (
+      {planData && !generateMutation.isPending && (
         <div className="space-y-8">
           {/* Weekly Goal */}
           <Card glass neon="blue" className="relative overflow-hidden">
@@ -111,11 +106,11 @@ export default function WorkoutPage() {
               <span className="text-xl">🎯</span>
               <h2 className="text-lg font-bold text-white">Haftalik Maqsad</h2>
             </div>
-            <p className="text-blue-200 text-base leading-relaxed font-light">{plan.weekly_goal}</p>
+            <p className="text-blue-200 text-base leading-relaxed font-light">{planData.weekly_goal}</p>
           </Card>
 
           {/* Daily Workouts */}
-          {plan.plan?.map((dayPlan, index) => (
+          {planData.plan?.map((dayPlan, index) => (
             <div key={index} className="space-y-4">
               {/* Day Divider */}
               <div className="flex items-center gap-4">
