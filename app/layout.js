@@ -60,32 +60,14 @@ export default function RootLayout({ children }) {
           </div>
 
           <div className="relative z-10 flex flex-col min-h-screen">
-            <NavbarWrapper />
+            <Navbar />
             <main className="flex-1 pb-20 md:pb-24">
               {children}
             </main>
-            <BottomNavWrapper />
+            <BottomNav />
           </div>
         </Providers>
       </body>
     </html>
   )
-}
-
-function NavbarWrapper() {
-  'use client'
-  const { usePathname } = require('next/navigation')
-  const pathname = usePathname()
-  if (pathname === '/' || pathname === '/auth/callback') return null
-  const Navbar = require('@/components/layout/Navbar').default
-  return <Navbar />
-}
-
-function BottomNavWrapper() {
-  'use client'
-  const { usePathname } = require('next/navigation')
-  const pathname = usePathname()
-  if (pathname === '/' || pathname === '/auth/callback') return null
-  const BottomNav = require('@/components/layout/BottomNav').default
-  return <BottomNav />
 }

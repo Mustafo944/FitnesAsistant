@@ -66,7 +66,7 @@ export default function BottomNav() {
   }, [])
 
   // Bosh sahifada, onboarding da va login bo'lmasa ko'rsatmaslik
-  if (pathname === '/' || pathname === '/onboarding' || !user) return null
+  if (pathname === '/' || pathname === '/onboarding' || pathname === '/auth/callback' || !user) return null
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 z-50 bg-white/[0.03] backdrop-blur-[30px] border-t border-white/10 pb-safe shadow-[0_-4px_30px_rgba(0,0,0,0.1)]">

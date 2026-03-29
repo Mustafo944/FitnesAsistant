@@ -79,7 +79,7 @@ export default function Navbar() {
       .catch(() => {})
   }, [user])
 
-  if (pathname === '/' || pathname === '/onboarding') return null
+  if (pathname === '/' || pathname === '/onboarding' || pathname === '/auth/callback') return null
 
   const handleSignOut = async () => {
     localStorage.removeItem(PROFILE_CACHE_KEY)
