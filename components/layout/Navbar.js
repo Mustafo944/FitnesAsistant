@@ -91,14 +91,18 @@ export default function Navbar() {
   const displayName = profile?.first_name
     ? `${profile.first_name} ${profile.last_name || ''}`.trim()
     : user?.user_metadata?.full_name || 'Foydalanuvchi'
-
+    
   const avatarUrl = user?.user_metadata?.avatar_url
+
+  // Use mounted state to prevent hydration mismatches
+  const finalDisplayName = mounted ? displayName : 'Foydalanuvchi'
+  const finalInitial = mounted ? displayName.charAt(0).toUpperCase() : 'F'
 
   return (
     <nav className="sticky top-0 z-50 bg-white/[0.03] backdrop-blur-[20px] border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
       <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          {avatarUrl ? (
+          {mounted && avatarUrl ? (
             <Image
               src={avatarUrl}
               alt="Avatar"
@@ -108,11 +112,16 @@ export default function Navbar() {
               unoptimized
             />
           ) : (
-            <div className="w-8 h-8 rounded-full bg-violet-600/30 border border-violet-500/30 flex items-center justify-center text-sm font-bold text-violet-300">
-              {displayName.charAt(0).toUpperCase()}
+            <div 
+              suppressHydrationWarning 
+              className="w-8 h-8 rounded-full bg-violet-600/30 border border-violet-500/30 flex items-center justify-center text-sm font-bold text-violet-300"
+            >
+              {finalInitial}
             </div>
           )}
-          <span className="text-sm font-medium text-white hidden sm:block">{displayName}</span>
+          <span suppressHydrationWarning className="text-sm font-medium text-white hidden sm:block">
+            {finalDisplayName}
+          </span>
         </div>
 
         <div className="flex items-center gap-2">
