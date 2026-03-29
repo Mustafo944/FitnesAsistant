@@ -33,7 +33,7 @@ export default function HistoryPage() {
     <PageWrapper>
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-white">Tahlil tarixi</h1>
-        <p className="text-gray-400 mt-1">Barcha o&apos;tgan natijalaringiz</p>
+        <p className="text-gray-400 mt-1">Barcha o'tgan natijalaringiz</p>
       </div>
 
       {loading ? (

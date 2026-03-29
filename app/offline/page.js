@@ -7,7 +7,7 @@ export default function OfflinePage() {
         <div className="text-6xl mb-6">📡</div>
         <h1 className="text-2xl font-bold text-white mb-4">Internet aloqasi uzildi</h1>
         <p className="text-gray-400 mb-8">
-          Iltimos, internet aloqasini tekshiring va qayta urinib ko&apos;ring.
+          Iltimos, internet aloqasini tekshiring va qayta urinib ko'ring.
         </p>
         <Link
           href="/"

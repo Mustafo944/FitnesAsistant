@@ -75,10 +75,10 @@ export default function ProgressPage() {
           </span>
         </div>
         <h1 className="text-4xl font-extrabold text-white tracking-tight mb-2">
-          O&apos;zgarishlar
+          O'zgarishlar
         </h1>
         <p className="text-gray-500 text-sm font-medium">
-          Vazn va BMI ko&apos;rsatkichlaringiz vaqt davomida qanday o&apos;zgarganini kuzating
+          Vazn va BMI ko'rsatkichlaringiz vaqt davomida qanday o'zgarganini kuzating
         </p>
       </div>
 

@@ -66,10 +66,10 @@ export default function WorkoutPage() {
         <div>
           <div className="flex items-center gap-3 mb-2">
             <span className="text-3xl">💪</span>
-            <h1 className="text-3xl font-extrabold text-white tracking-tight">Mashg&apos;ulot Rejasi</h1>
+            <h1 className="text-3xl font-extrabold text-white tracking-tight">Mashg'ulot Rejasi</h1>
           </div>
           <p className="text-gray-500 text-sm">
-            Sizning maqsadingizga mos individual mashg&apos;ulot dasturi
+            Sizning maqsadingizga mos individual mashg'ulot dasturi
           </p>
         </div>
         <Button
@@ -101,9 +101,9 @@ export default function WorkoutPage() {
       {!planData && !generateMutation.isPending && (
         <Card glass className="p-12 text-center border border-white/5">
           <span className="text-5xl block mb-4">🏋️</span>
-          <h3 className="text-xl font-bold text-white mb-2">Mashg&apos;ulot rejasi mavjud emas</h3>
+          <h3 className="text-xl font-bold text-white mb-2">Mashg'ulot rejasi mavjud emas</h3>
           <p className="text-gray-500 text-sm max-w-sm mx-auto">
-            Yuqoridagi tugmani bosib, AI sizga individual mashg&apos;ulot rejasini tayyorlab bersin.
+            Yuqoridagi tugmani bosib, AI sizga individual mashg'ulot rejasini tayyorlab bersin.
           </p>
         </Card>
       )}

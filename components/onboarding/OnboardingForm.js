@@ -59,9 +59,9 @@ export default function OnboardingForm() {
   return (
     <Card glass className="max-w-md mx-auto">
       <div className="mb-6">
-        <h2 className="text-2xl font-bold text-white">Ma&apos;lumotlaringiz</h2>
+        <h2 className="text-2xl font-bold text-white">Ma'lumotlaringiz</h2>
         <p className="text-gray-400 mt-1">
-          Aniqroq natija uchun ma&apos;lumotlaringizni kiriting
+          Aniqroq natija uchun ma'lumotlaringizni kiriting
         </p>
       </div>
 

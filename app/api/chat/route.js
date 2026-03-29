@@ -25,23 +25,31 @@ export async function POST(request) {
       return Response.json({ message: 'Xabar kiritilmadi' }, { status: 400 })
     }
 
-    supabase.from('chat_messages').insert([{
-      user_id: user.id,
-      role: 'user',
-      content: message
-    }]).then(({error}) => {
-      if(error) console.error("Kechiktirilgan saqlash xatosi:", error)
-    })
+    const { error: userInsertError } = await supabase
+      .from('chat_messages')
+      .insert({
+        user_id: user.id,
+        role: 'user',
+        content: message
+      })
+
+    if (userInsertError) {
+      console.error('Foydalanuvchi xabarini saqlashda xatolik:', userInsertError)
+    }
 
     const reply = await chatWithGemini(message, history || [], profile)
 
-    supabase.from('chat_messages').insert([{
-      user_id: user.id,
-      role: 'model',
-      content: reply
-    }]).then(({error}) => {
-      if(error) console.error("Kechiktirilgan saqlash xatosi (model):", error)
-    })
+    const { error: modelInsertError } = await supabase
+      .from('chat_messages')
+      .insert({
+        user_id: user.id,
+        role: 'model',
+        content: reply
+      })
+
+    if (modelInsertError) {
+      console.error('AI javobini saqlashda xatolik:', modelInsertError)
+    }
 
     return Response.json({ reply })
   } catch (err) {

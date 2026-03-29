@@ -104,8 +104,9 @@ export async function POST(request) {
     return Response.json(data)
   } catch (err) {
     console.error('Analyze error:', err)
+    const errorMessage = err.message || 'Tahlil qilishda xatolik yuz berdi'
     return Response.json(
-      { message: err.message || 'Tahlil qilishda xatolik yuz berdi' },
+      { message: errorMessage },
       { status: 500 }
     )
   }

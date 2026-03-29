@@ -27,7 +27,7 @@ export default function DietTips({ tips }) {
             {/* Hardcoded pill badges to match image look */}
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/5 border border-emerald-500/10 text-[10px] font-bold text-emerald-300 uppercase tracking-tighter">
               <span className="opacity-60 text-xs">🥗</span>
-              Sabzavotlar ko&apos;p
+              Sabzavotlar ko'p
             </div>
           </div>
         </div>

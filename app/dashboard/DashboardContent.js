@@ -42,30 +42,34 @@ export default function DashboardContent({ initialProfile, initialLatestAnalysis
 
   const smartSummary = useMemo(() => {
     if (!profile) {
-      return "Ma&apos;lumotlar mavjud emas"
+      return "Ma'lumotlar mavjud emas"
     }
-    if (latestAnalysis?.result?.summary) {
-      return latestAnalysis.result.summary
-    }
-
-    let focus = ''
-    let tip = ''
     
-    if (bmi < 18.5) {
-      focus = "Vazn yetishmovchiligi"
-      tip = "Sizga mushak massasini oshirish (bulking) tavsiya etiladi."
-    } else if (bmi < 25) {
-      focus = "Sog&apos;lom tana ko&apos;rsatkichi"
-      tip = "Tana holatingiz juda yaxshi!"
-    } else if (bmi < 30) {
-      focus = "Ortiqcha vazn"
-      tip = "Tana yog&apos; foizini kamaytirish bo&apos;g&apos;inlar (ayniqsa tizza) uchun juda foydali."
+    // Clean up summary if it comes from database or previous version
+    let rawSummary = ""
+    if (latestAnalysis?.result?.summary) {
+      rawSummary = latestAnalysis.result.summary
     } else {
-      focus = "Semirib ketish holati"
-      tip = "Bo&apos;g&apos;inlarga (tizza, bel) og&apos;irlik tushmasligi uchun yuk kamaytirilishi shart."
+      let focus = ''
+      let tip = ''
+      
+      if (bmi < 18.5) {
+        focus = "Vazn yetishmasligi"
+        tip = "Sizga mushak massasini oshirish (bulking) tavsiya etiladi."
+      } else if (bmi < 25) {
+        focus = "Sog'lom tana ko'rsatkichi"
+        tip = "Tana holatingiz juda yaxshi!"
+      } else if (bmi < 30) {
+        focus = "Ortiqcha vazn"
+        tip = "Tana yog' foizini kamaytirish bo'g'inlari (ayniqsa tizza) uchun juda foydali."
+      } else {
+        focus = "Semizlik holati"
+        tip = "Bo'g'inlarga (tizza, bel) og'irlik tushmasligi uchun vazn kamaytirish shart."
+      }
+      rawSummary = `${focus} aniqlandi. ${tip} Kunlik ${tdee} kcal (saqlash) / ${tdee - 500} kcal (ozish) tavsiya etiladi.`
     }
 
-    return `${focus} aniqlandi. ${tip} Kunlik ${tdee} kcal (saqlash) / ${tdee - 500} kcal (ozish) tavsiya etiladi.`
+    return rawSummary.replaceAll('&apos;', "'").replaceAll('&quot;', '"').replaceAll('&amp;', '&')
   }, [latestAnalysis, bmi, tdee, profile])
 
   if (!profile) {
@@ -74,7 +78,7 @@ export default function DashboardContent({ initialProfile, initialLatestAnalysis
         <div className="text-center">
           <p className="text-gray-400 mb-4">Profil topilmadi</p>
           <Link href="/onboarding" className="text-violet-400 underline">
-            Profilni to&apos;ldirish
+            Profilni to'ldirish
           </Link>
         </div>
       </PageWrapper>
@@ -94,7 +98,7 @@ export default function DashboardContent({ initialProfile, initialLatestAnalysis
         <h1 className="text-4xl font-extrabold text-white tracking-tight mb-2">
           Natijalar
         </h1>
-        <p className="text-gray-500 text-sm font-medium tracking-[0.2em] uppercase min-h-[20px]">
+        <p className="text-gray-500 text-sm font-medium tracking-[0.2em] uppercase min-h-[20px]" suppressHydrationWarning>
           {dateString}
         </p>
       </div>
@@ -116,7 +120,7 @@ export default function DashboardContent({ initialProfile, initialLatestAnalysis
               <span className="text-3xl filter drop-shadow-[0_0_8px_rgba(168,85,247,0.6)]">📊</span>
               <div>
                 <h3 className="text-sm font-bold text-white">Grafik</h3>
-                <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">O&apos;zgarish</p>
+                <p className="text-[10px] text-gray-500 uppercase tracking-wider mt-0.5">O'zgarish</p>
               </div>
             </div>
           </Link>

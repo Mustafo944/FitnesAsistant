@@ -37,7 +37,7 @@ export default function PlanPage() {
           Haftalik Reja
         </h1>
         <p className="text-gray-500 font-medium max-w-md mx-auto">
-          AI sizning tana ko&apos;rsatkichlaringiz va maqsadingizga tayanib shaxsiy reja tuzadi
+          AI sizning tana ko'rsatkichlaringiz va maqsadingizga tayanib shaxsiy reja tuzadi
         </p>
       </div>
 

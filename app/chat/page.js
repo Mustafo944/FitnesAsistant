@@ -1,4 +1,5 @@
 'use client'
+// Cache budget: 1.0.1 - Updated UI logic
 
 import dynamic from 'next/dynamic'
 import { useState, useRef, useEffect } from 'react'
@@ -14,16 +15,23 @@ export default function ChatPage() {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
-  const [isRecording, setIsRecording] = useState(false)
+  const [historyLoading, setHistoryLoading] = useState(true)
   const messagesEndRef = useRef(null)
-  const recognitionRef = useRef(null)
+  const textareaRef = useRef(null)
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages])
 
+  // Auto-expand textarea
   useEffect(() => {
-    // Sahifa yuklanganda tarixni olish
+    if (textareaRef.current) {
+      textareaRef.current.style.height = 'auto'
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`
+    }
+  }, [input])
+
+  useEffect(() => {
     const fetchHistory = async () => {
       try {
         const res = await fetch('/api/chat/history')
@@ -35,64 +43,30 @@ export default function ChatPage() {
         }
       } catch (err) {
         console.error('Chat tarixini yuklashda xatolik:', err)
+      } finally {
+        setHistoryLoading(false)
       }
     }
     
     fetchHistory()
   }, [])
 
-  useEffect(() => {
-    // Brauzer SpeechRecognition API ni tekshirish
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
-    if (SpeechRecognition) {
-      const recognition = new SpeechRecognition()
-      recognition.continuous = false
-      recognition.interimResults = false
-      recognition.lang = 'uz-UZ' // O'zbek tilida tanish
-
-      recognition.onresult = (event) => {
-        const transcript = event.results[0][0].transcript
-        setInput((prev) => prev + (prev ? ' ' : '') + transcript)
-        setIsRecording(false)
-      }
-
-      recognition.onerror = (event) => {
-        console.error('Speech recognition error', event.error)
-        setIsRecording(false)
-      }
-
-      recognition.onend = () => {
-        setIsRecording(false)
-      }
-
-      recognitionRef.current = recognition
-    }
-  }, [])
-
-  const handleMicClick = () => {
-    if (isRecording) {
-      recognitionRef.current?.stop()
-      setIsRecording(false)
-    } else {
-      recognitionRef.current?.start()
-      setIsRecording(true)
-    }
-  }
-
   const handleSubmit = async (e) => {
-    e.preventDefault()
+    if (e) e.preventDefault()
     if (!input.trim() || loading) return
 
     const userMsg = input.trim()
     setInput('')
     
-    // Yuboriladigan xabarlar tarixi (xatolik xabarlarini chiqaramiz)
+    // Smooth reset height
+    if (textareaRef.current) textareaRef.current.style.height = 'auto'
+
     const history = messages
       .filter(m => m.role !== 'error')
       .map(m => ({ role: m.role, content: m.content }))
     
-    // Mahalliy UI ga xabarni qo'shish
-    setMessages(prev => [...prev, { role: 'user', content: userMsg }])
+    const tempId = Date.now()
+    setMessages(prev => [...prev, { id: tempId, role: 'user', content: userMsg }])
     setLoading(true)
 
     try {
@@ -106,123 +80,134 @@ export default function ChatPage() {
       
       if (!res.ok) throw new Error(data.message || 'Xatolik')
       
-      setMessages(prev => [...prev, { role: 'model', content: data.reply }])
+      setMessages(prev => [...prev.filter(m => m.id !== tempId), 
+        { role: 'user', content: userMsg },
+        { role: 'model', content: data.reply }
+      ])
     } catch (err) {
-      setMessages(prev => [...prev, { role: 'error', content: "Tarmoqda xatolik yuz berdi yoki AI band. Iltimos, qayta urinib ko'ring." }])
+      setMessages(prev => [...prev, { role: 'error', content: "Tarmoqda xatolik yuz berdi. Iltimos, qayta urinib ko'ring." }])
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <PageWrapper className="max-w-3xl mx-auto py-4 md:py-8 h-[calc(100vh-4rem)] flex flex-col">
-      <div className="mb-4 md:mb-6 px-1">
-        <h1 className="text-2xl md:text-3xl font-bold text-white mb-1 md:mb-2">Fitnes Asistent</h1>
-        <p className="text-gray-400 text-sm md:text-base">Sun&apos;iy intellekt bilan yozishib yoki ovozli gaplashib maslahat oling.</p>
-      </div>
-
-      <Card glass className="flex-1 flex flex-col overflow-hidden p-0 bg-transparent border-white/10">
-        <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-3 md:space-y-4">
-          {messages.length === 0 && (
-            <div className="h-full flex flex-col items-center justify-center text-center px-2 md:px-4">
-              <div className="w-12 h-12 md:w-16 md:h-16 bg-violet-500/20 rounded-full flex items-center justify-center mb-3 md:mb-4">
-                <svg className="w-6 h-6 md:w-8 md:h-8 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                </svg>
-              </div>
-              <h3 className="text-base md:text-lg font-medium text-white mb-1 md:mb-2">Asistent bilan suhbatni boshlang</h3>
-              <p className="text-gray-400 text-xs md:text-sm max-w-xs">Savollaringizni matn ko&apos;rinishida yozing yoki mikrofon tugmasini bosib o&apos;zbek tilida gapiring.</p>
+    <div className="flex flex-col h-[calc(100dvh-4rem)] bg-[#0a0a0c]">
+      <PageWrapper className="max-w-4xl mx-auto flex-1 flex flex-col p-0 md:p-4 overflow-hidden">
+        
+        {/* Chat History Area */}
+        <div className="flex-1 overflow-y-auto px-4 py-8 space-y-6 scrollbar-hide">
+          {historyLoading ? (
+            <div className="h-full flex flex-col items-center justify-center opacity-50">
+              <Spinner className="w-8 h-8 text-violet-500 mb-2" />
+              <p className="text-xs font-medium tracking-widest uppercase">Xotira yuklanmoqda...</p>
             </div>
-          )}
-          
-          {messages.map((msg, i) => (
-            <MotionDiv 
-              key={msg.id || i}
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3 }}
-              className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
-            >
-              {msg.role === 'error' ? (
-                <div className="max-w-[85%] sm:max-w-[80%] rounded-2xl px-4 py-3 shadow-lg bg-red-500/10 border border-red-500/20 text-red-400 flex items-center gap-2 sm:gap-3">
-                  <span className="text-lg sm:text-xl">⚠️</span>
-                  <p className="text-xs sm:text-sm font-medium">{msg.content}</p>
-                </div>
-              ) : (
-                <div className={`max-w-[85%] sm:max-w-[80%] rounded-2xl sm:rounded-3xl px-4 py-3 sm:px-5 sm:py-3.5 shadow-lg ${
-                  msg.role === 'user' 
-                    ? 'bg-gradient-to-tr from-violet-600 to-fuchsia-500 text-white rounded-br-sm sm:rounded-br-none border border-white/10' 
-                    : 'bg-white/5 backdrop-blur-xl text-gray-200 rounded-bl-sm border border-white/10'
-                }`}>
-                  {msg.role === 'model' ? (
-                    <MarkdownRenderer content={msg.content} />
-                  ) : (
-                    <p className="text-sm font-medium">{msg.content}</p>
-                  )}
-                </div>
-              )}
-            </MotionDiv>
-          ))}
-          {loading && (
-            <MotionDiv 
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="flex justify-start"
-            >
-              <div className="bg-white/5 text-gray-200 rounded-2xl sm:rounded-3xl rounded-bl-sm px-4 py-3 sm:px-5 sm:py-4 border border-white/10 shadow-lg flex items-center gap-2 sm:gap-3">
-                <Spinner className="w-4 h-4 text-violet-400" />
-                <span className="text-xs sm:text-sm font-medium text-gray-400">Yozmoqda...</span>
+          ) : messages.length === 0 ? (
+            <div className="h-full flex flex-col items-center justify-center text-center max-w-sm mx-auto">
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-violet-600/20 to-indigo-600/20 flex items-center justify-center mb-6 shadow-2xl border border-white/5">
+                 <span className="text-4xl filter drop-shadow-[0_0_8px_rgba(168,85,247,0.5)]">✨</span>
               </div>
-            </MotionDiv>
-          )}
-          <div ref={messagesEndRef} />
-        </div>
-
-        <div className="p-3 sm:p-4 bg-gray-950/50 border-t border-white/10">
-          <form onSubmit={handleSubmit} className="flex items-end gap-2">
-            <div className="flex-1 relative">
-              <textarea
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Savolingizni yozing..."
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3 text-white placeholder-gray-500 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/50 resize-none max-h-32 min-h-[44px] sm:min-h-[50px] text-sm sm:text-base"
-                rows={1}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault()
-                    handleSubmit(e)
-                  }
-                }}
-              />
+              <h1 className="text-2xl font-black text-white mb-3">Salom! Men sizning Fitnes Asistentingizman.</h1>
+              <p className="text-gray-500 text-sm leading-relaxed font-medium">
+                Mashg'ulotlar, ovqatlanish yoki sog'lom turmush tarzi haqida savollaringiz bo'lsa, marhamat! Men sizga yordam berishga tayyorman.
+              </p>
             </div>
-            
-            {recognitionRef.current && (
-              <button
-                type="button"
-                onClick={handleMicClick}
-                className={`p-2.5 sm:p-3 rounded-xl transition-all ${
-                  isRecording 
-                    ? 'bg-red-500/20 text-red-500 border border-red-500/50 animate-pulse' 
-                    : 'bg-white/5 text-gray-400 border border-white/10 hover:text-white hover:bg-white/10'
-                }`}
-                title="Ovozli yozish"
+          ) : (
+            messages.map((msg, i) => (
+              <MotionDiv 
+                key={msg.id || i}
+                initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.4, ease: [0.23, 1, 0.32, 1] }}
+                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
               >
-                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                </svg>
-              </button>
-            )}
+                <div className="flex flex-col gap-2 max-w-[85%] md:max-w-[75%]">
+                  <div className={`
+                    relative px-5 py-3.5 rounded-[22px] shadow-2xl border transition-all duration-300
+                    ${msg.role === 'user' 
+                      ? 'bg-gradient-to-tr from-violet-600 to-indigo-600 border-white/10 text-white rounded-br-md self-end' 
+                      : msg.role === 'error'
+                        ? 'bg-red-500/10 border-red-500/20 text-red-400'
+                        : 'bg-white/[0.03] backdrop-blur-xl border-white/5 text-gray-200 rounded-bl-md'
+                    }
+                  `}>
+                    {msg.role === 'model' ? (
+                      <MarkdownRenderer content={msg.content} />
+                    ) : (
+                      <p className="text-[15px] leading-relaxed font-medium whitespace-pre-wrap">{msg.content}</p>
+                    )}
+                  </div>
+                  <span className={`text-[10px] font-bold uppercase tracking-widest opacity-30 ${msg.role === 'user' ? 'text-right mr-2' : 'text-left ml-2'}`}>
+                    {msg.role === 'user' ? 'Siz' : 'Asistent'}
+                  </span>
+                </div>
+              </MotionDiv>
+            ))
+          )}
 
-            <Button 
-              type="submit" 
-              disabled={!input.trim() || loading}
-              className="px-4 sm:px-6 py-2.5 sm:py-3 h-[44px] sm:h-[50px]"
+          {loading && (
+             <MotionDiv 
+              initial={{ opacity: 0, x: -10 }} 
+              animate={{ opacity: 1, x: 0 }}
+              className="flex justify-start items-center gap-3 ml-2"
             >
-              Yuborish
-            </Button>
-          </form>
+              <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
+                 <div className="flex gap-1">
+                    <span className="w-1 h-1 bg-violet-400 rounded-full animate-bounce" />
+                    <span className="w-1 h-1 bg-violet-400 rounded-full animate-bounce [animation-delay:0.2s]" />
+                    <span className="w-1 h-1 bg-violet-400 rounded-full animate-bounce [animation-delay:0.4s]" />
+                 </div>
+              </div>
+              <span className="text-[10px] font-black text-gray-500 uppercase tracking-widest">Tahlil qilinmoqda...</span>
+            </MotionDiv>
+          )}
+          <div ref={messagesEndRef} className="h-4" />
         </div>
-      </Card>
-    </PageWrapper>
+
+        {/* Input Bar Section */}
+        <div className="px-4 pb-6 pt-2">
+          <div className="relative max-w-3xl mx-auto flex items-end gap-2 bg-white/[0.03] backdrop-blur-[32px] border border-white/10 rounded-[28px] p-2 pl-4 shadow-2xl focus-within:border-violet-500/30 transition-all duration-300">
+            <textarea
+              ref={textareaRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault()
+                  handleSubmit()
+                }
+              }}
+              placeholder="Xabar yozing..."
+              className="flex-1 bg-transparent border-none focus:ring-0 text-white placeholder-gray-500 py-3 text-[15px] leading-relaxed resize-none scrollbar-hide min-h-[44px] max-h-[150px]"
+              rows={1}
+            />
+            
+            <button
+              onClick={() => handleSubmit()}
+              disabled={!input.trim() || loading}
+              className={`
+                w-11 h-11 rounded-2xl flex items-center justify-center transition-all duration-500 shrink-0
+                ${input.trim() && !loading 
+                  ? 'bg-violet-600 text-white shadow-[0_0_20px_rgba(139,92,246,0.4)] scale-100 rotate-0' 
+                  : 'bg-white/5 text-gray-600 scale-90 -rotate-12'
+                }
+              `}
+            >
+              {loading ? (
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+              ) : (
+                <svg className="w-5 h-5 translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              )}
+            </button>
+          </div>
+          <p className="text-[9px] text-center text-gray-600 font-bold uppercase tracking-[0.2em] mt-3 opacity-50">
+            AI ba'zida xato qilishi mumkin. Muhim ma'lumotlarni tekshiring.
+          </p>
+        </div>
+
+      </PageWrapper>
+    </div>
   )
 }

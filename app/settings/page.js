@@ -106,7 +106,7 @@ export default function SettingsPage() {
     <PageWrapper className="max-w-lg mx-auto py-6 px-4">
       <div className="mb-6">
         <h1 className="text-2xl font-bold text-white">Sozlamalar</h1>
-        <p className="text-gray-400 text-sm mt-1">Shaxsiy ma&apos;lumotlaringizni yangilang</p>
+        <p className="text-gray-400 text-sm mt-1">Shaxsiy ma'lumotlaringizni yangilang</p>
       </div>
 
       <Card glass className="border-white/5">
@@ -200,7 +200,7 @@ export default function SettingsPage() {
 
           {success && (
             <p className="text-sm text-green-400 bg-green-400/10 rounded-xl px-4 py-2">
-              ✅ Ma&apos;lumotlar muvaffaqiyatli saqlandi!
+              ✅ Ma'lumotlar muvaffaqiyatli saqlandi!
             </p>
           )}
 

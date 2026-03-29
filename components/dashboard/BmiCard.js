@@ -11,7 +11,7 @@ export default function BmiCard({ bmi }) {
     <Card neon="blue" className="relative">
       <div className="flex justify-between items-start mb-4">
         <div>
-          <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider">BMI ko&apos;rsatkichi</h3>
+          <h3 className="text-sm font-medium text-gray-400 uppercase tracking-wider">BMI ko'rsatkichi</h3>
           <div className="flex items-baseline gap-3 mt-1">
             <span className="text-4xl font-bold text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)]">{bmi.value}</span>
             <span className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter bg-amber-500/10 text-amber-500 border border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.2)]`}>

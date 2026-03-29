@@ -57,7 +57,11 @@ export default function ImageUploader() {
 
       router.push('/dashboard')
     } catch (err) {
-      setError(err.message)
+      let errorMessage = err.message || "Tahlil qilishda xatolik yuz berdi"
+      if (errorMessage.includes('image') || errorMessage.includes('model') || errorMessage.includes('read')) {
+        errorMessage = "Rasm formatida xatolik. Iltimos, boshqa rasm bilan qayta urinib ko'ring."
+      }
+      setError(errorMessage)
     } finally {
       setLoading(false)
       setStep('')
@@ -74,7 +78,7 @@ export default function ImageUploader() {
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-white">Tana rasmingiz</h2>
         <p className="text-gray-400 mt-1">
-          AI tahlil uchun to&apos;liq tana rasmingizni yuklang
+          AI tahlil uchun to'liq tana rasmingizni yuklang
         </p>
       </div>
 

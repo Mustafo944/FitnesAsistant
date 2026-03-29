@@ -49,7 +49,7 @@ export default async function HomePage({ searchParams }) {
         </h1>
 
         <p className="text-gray-400 text-lg md:text-xl mb-12 max-w-md mx-auto leading-relaxed font-light">
-          Sun&apos;iy intellekt yordamida tana holatingizni tahlil qiling va shaxsiy fitness rejangizni oling
+          Sun'iy intellekt yordamida tana holatingizni tahlil qiling va shaxsiy fitness rejangizni oling
         </p>
 
         <div className="flex flex-col items-center justify-center gap-6">

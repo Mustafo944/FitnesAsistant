@@ -11,7 +11,7 @@ export default function WorkoutPlan({ workouts }) {
         </div>
         <div>
           <h3 className="text-xl font-bold text-white tracking-tight">Mashq rejasi</h3>
-          <p className="text-xs text-gray-500">Haftasiga 4-5 kun • Yog&apos; yoqish + Mushakni mustahkamlash</p>
+          <p className="text-xs text-gray-500">Haftasiga 4-5 kun • Yog' yoqish + Mushakni mustahkamlash</p>
         </div>
       </div>
 
