@@ -1,8 +1,6 @@
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { analyzeFoodWithGemini } from '@/services/ai'
 
-const genai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
-
 const UZBEK_FOOD_KNOWLEDGE = {
   'osh': { calories: 250, protein: 8, carbs: 35, fats: 8, type: 'tushlik' },
   'somsa': { calories: 280, protein: 10, carbs: 30, fats: 12, type: 'ertalabki_nonushta' },
