@@ -23,9 +23,7 @@ export async function GET(request) {
     return Response.json({ messages: messages || [] })
   } catch (err) {
     console.error('History fetch error:', err)
-    return Response.json(
-      { message: 'Xabarlar tarixini olishda xatolik yuz berdi' },
-      { status: 500 }
-    )
+    // Jadval topilmasa yoki boshqa xatolik — bo'sh massiv qaytaramiz (500 emas)
+    return Response.json({ messages: [] })
   }
 }
