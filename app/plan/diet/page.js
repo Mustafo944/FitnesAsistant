@@ -9,11 +9,17 @@ import Spinner from '@/components/ui/Spinner'
 
 const MEAL_ICONS = {
   'Nonushta': '☀️',
-  'Ertuslik': '☕',
-  'Cho\'michka': '🍎',
-  'Tushlik': '🍲',
-  'Kechkiqlik': '🍪',
-  'Kechki ovqat': '🌙',
+  'Nonushta (7:00)': '☀️',
+  'ertalabki nonushta': '☀️',
+  'ertalabki nonushta (7:00)': '☀️',
+  'cho\'michka': '🍎',
+  'cho\'michka (10:00)': '🍎',
+  'tushlik': '🍲',
+  'tushlik (13:00)': '🍲',
+  'kechkiqlik': '🍪',
+  'kechkiqlik (16:00)': '🍪',
+  'kechki ovqat': '🌙',
+  'kechki ovqat (19:00)': '🌙',
   'default': '🍽️',
 }
 
@@ -23,8 +29,7 @@ function getMealIcon(type) {
   if (lower.includes('non') || lower.includes('erta')) return '☀️'
   if (lower.includes('tush') || lower.includes('lunch')) return '🍲'
   if (lower.includes('kech') || lower.includes('ovqat') || lower.includes('dinner')) return '🌙'
-  if (lower.includes('cho') || lower.includes('snack')) return '🍎'
-  if (lower.includes('eko') || lower.includes('second')) return '🍪'
+  if (lower.includes('cho') || lower.includes('snack') || lower.includes('ekst')) return '🍎'
   return '🍽️'
 }
 

@@ -118,7 +118,7 @@ JSON tuzilishi (HAR BIR QATOR TO'LDIRILISHI KERAK):
       "day_name": "Dushanba",
       "focus": "Mushak guruhi yoki diet focus",
       "meals": [
-        { "type": "Nonushta (7:00)", "food": "Aniq taom nomi va retsept qisqa", "calories": ${Math.round(calories.maintenance * 0.25)}, "macros": "Oqsil: Xg, Uglevod: Xg, Yog': Xg" },
+        { "type": "Ertalabki nonushta (7:00)", "food": "Aniq taom nomi va retsept qisqa", "calories": ${Math.round(calories.maintenance * 0.25)}, "macros": "Oqsil: Xg, Uglevod: Xg, Yog': Xg" },
         { "type": "Cho'michka (10:00)", "food": "Aniq taom", "calories": ${Math.round(calories.maintenance * 0.10)}, "macros": "Oqsil: Xg, Uglevod: Xg, Yog': Xg" },
         { "type": "Tushlik (13:00)", "food": "Aniq taom", "calories": ${Math.round(calories.maintenance * 0.35)}, "macros": "Oqsil: Xg, Uglevod: Xg, Yog': Xg" },
         { "type": "Kechkiqlik (16:00)", "food": "Aniq taom", "calories": ${Math.round(calories.maintenance * 0.15)}, "macros": "Oqsil: Xg, Uglevod: Xg, Yog': Xg" },

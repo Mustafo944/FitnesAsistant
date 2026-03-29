@@ -5,6 +5,12 @@ import { cookies } from 'next/headers'
 export async function GET(request) {
   const requestUrl = new URL(request.url)
   const code = requestUrl.searchParams.get('code')
+  const errorParam = requestUrl.searchParams.get('error')
+
+  if (errorParam) {
+    console.error('Auth error:', errorParam)
+    return NextResponse.redirect(new URL('/?error=auth_failed', requestUrl.origin))
+  }
 
   if (code) {
     const cookieStore = await cookies()
@@ -22,7 +28,7 @@ export async function GET(request) {
                 cookieStore.set(name, value, options)
               )
             } catch {
-              // Ignored
+              // Server component cookie error - ignored
             }
           },
         },
@@ -31,7 +37,12 @@ export async function GET(request) {
 
     const { data: { user }, error } = await supabase.auth.exchangeCodeForSession(code)
 
-    if (!error && user) {
+    if (error) {
+      console.error('Session exchange error:', error)
+      return NextResponse.redirect(new URL('/?error=session_failed', requestUrl.origin))
+    }
+
+    if (user) {
       const { data: profile } = await supabase
         .from('profiles')
         .select('onboarded')

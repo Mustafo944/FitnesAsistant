@@ -115,23 +115,23 @@ export default function ChatPage() {
   }
 
   return (
-    <PageWrapper className="max-w-3xl mx-auto py-8 h-[calc(100vh-4rem)] flex flex-col">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-white mb-2">Fitnes Asistant</h1>
-        <p className="text-gray-400">Sun'iy intellekt bilan yozishib yoki ovozli gaplashib maslahat oling.</p>
+    <PageWrapper className="max-w-3xl mx-auto py-4 md:py-8 h-[calc(100vh-4rem)] flex flex-col">
+      <div className="mb-4 md:mb-6 px-1">
+        <h1 className="text-2xl md:text-3xl font-bold text-white mb-1 md:mb-2">Fitnes Asistent</h1>
+        <p className="text-gray-400 text-sm md:text-base">Sun&apos;iy intellekt bilan yozishib yoki ovozli gaplashib maslahat oling.</p>
       </div>
 
       <Card glass className="flex-1 flex flex-col overflow-hidden p-0 bg-transparent border-white/10">
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        <div className="flex-1 overflow-y-auto p-3 md:p-4 space-y-3 md:space-y-4">
           {messages.length === 0 && (
-            <div className="h-full flex flex-col items-center justify-center text-center px-4">
-              <div className="w-16 h-16 bg-violet-500/20 rounded-full flex items-center justify-center mb-4">
-                <svg className="w-8 h-8 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="h-full flex flex-col items-center justify-center text-center px-2 md:px-4">
+              <div className="w-12 h-12 md:w-16 md:h-16 bg-violet-500/20 rounded-full flex items-center justify-center mb-3 md:mb-4">
+                <svg className="w-6 h-6 md:w-8 md:h-8 text-violet-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
                 </svg>
               </div>
-              <h3 className="text-lg font-medium text-white mb-2">Asistant bilan suhbatni boshlang</h3>
-              <p className="text-gray-400 text-sm max-w-sm">Savollaringizni matn ko'rinishida yozing yoki mikrofon tugmasini bosib o'zbek tilida gapiring.</p>
+              <h3 className="text-base md:text-lg font-medium text-white mb-1 md:mb-2">Asistent bilan suhbatni boshlang</h3>
+              <p className="text-gray-400 text-xs md:text-sm max-w-xs">Savollaringizni matn ko&apos;rinishida yozing yoki mikrofon tugmasini bosib o&apos;zbek tilida gapiring.</p>
             </div>
           )}
           
@@ -144,14 +144,14 @@ export default function ChatPage() {
               className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {msg.role === 'error' ? (
-                <div className="max-w-[80%] rounded-2xl px-5 py-3.5 shadow-lg bg-red-500/10 border border-red-500/20 text-red-400 flex items-center gap-3">
-                  <span className="text-xl">⚠️</span>
-                  <p className="text-sm font-medium">{msg.content}</p>
+                <div className="max-w-[85%] sm:max-w-[80%] rounded-2xl px-4 py-3 shadow-lg bg-red-500/10 border border-red-500/20 text-red-400 flex items-center gap-2 sm:gap-3">
+                  <span className="text-lg sm:text-xl">⚠️</span>
+                  <p className="text-xs sm:text-sm font-medium">{msg.content}</p>
                 </div>
               ) : (
-                <div className={`max-w-[80%] rounded-3xl px-5 py-3.5 shadow-lg ${
+                <div className={`max-w-[85%] sm:max-w-[80%] rounded-2xl sm:rounded-3xl px-4 py-3 sm:px-5 sm:py-3.5 shadow-lg ${
                   msg.role === 'user' 
-                    ? 'bg-gradient-to-tr from-violet-600 to-fuchsia-500 text-white rounded-br-none border border-white/10' 
+                    ? 'bg-gradient-to-tr from-violet-600 to-fuchsia-500 text-white rounded-br-sm sm:rounded-br-none border border-white/10' 
                     : 'bg-white/5 backdrop-blur-xl text-gray-200 rounded-bl-sm border border-white/10'
                 }`}>
                   {msg.role === 'model' ? (
@@ -169,23 +169,23 @@ export default function ChatPage() {
               animate={{ opacity: 1, y: 0 }}
               className="flex justify-start"
             >
-              <div className="bg-white/5 text-gray-200 rounded-3xl rounded-bl-sm px-5 py-4 border border-white/10 shadow-lg flex items-center gap-3">
+              <div className="bg-white/5 text-gray-200 rounded-2xl sm:rounded-3xl rounded-bl-sm px-4 py-3 sm:px-5 sm:py-4 border border-white/10 shadow-lg flex items-center gap-2 sm:gap-3">
                 <Spinner className="w-4 h-4 text-violet-400" />
-                <span className="text-sm font-medium text-gray-400">Yozmoqda...</span>
+                <span className="text-xs sm:text-sm font-medium text-gray-400">Yozmoqda...</span>
               </div>
             </MotionDiv>
           )}
           <div ref={messagesEndRef} />
         </div>
 
-        <div className="p-4 bg-gray-950/50 border-t border-white/10">
+        <div className="p-3 sm:p-4 bg-gray-950/50 border-t border-white/10">
           <form onSubmit={handleSubmit} className="flex items-end gap-2">
             <div className="flex-1 relative">
               <textarea
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Savolingizni yozing..."
-                className="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/50 resize-none max-h-32 min-h-[50px]"
+                className="w-full bg-white/5 border border-white/10 rounded-xl px-3 py-2.5 sm:px-4 sm:py-3 text-white placeholder-gray-500 focus:outline-none focus:border-violet-500/50 focus:ring-1 focus:ring-violet-500/50 resize-none max-h-32 min-h-[44px] sm:min-h-[50px] text-sm sm:text-base"
                 rows={1}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && !e.shiftKey) {
@@ -200,14 +200,14 @@ export default function ChatPage() {
               <button
                 type="button"
                 onClick={handleMicClick}
-                className={`p-3 rounded-xl transition-all ${
+                className={`p-2.5 sm:p-3 rounded-xl transition-all ${
                   isRecording 
                     ? 'bg-red-500/20 text-red-500 border border-red-500/50 animate-pulse' 
                     : 'bg-white/5 text-gray-400 border border-white/10 hover:text-white hover:bg-white/10'
                 }`}
                 title="Ovozli yozish"
               >
-                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                 </svg>
               </button>
@@ -216,7 +216,7 @@ export default function ChatPage() {
             <Button 
               type="submit" 
               disabled={!input.trim() || loading}
-              className="px-6 py-3 h-[50px]"
+              className="px-4 sm:px-6 py-2.5 sm:py-3 h-[44px] sm:h-[50px]"
             >
               Yuborish
             </Button>

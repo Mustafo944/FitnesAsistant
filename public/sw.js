@@ -1,17 +1,14 @@
-const CACHE_NAME = 'fit2-v1'
+const CACHE_NAME = 'fit2-v2'
 const STATIC_ASSETS = [
   '/',
   '/offline',
-]
-
-const CACHE_URLS = [
-  ...STATIC_ASSETS,
+  '/manifest.json',
 ]
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(CACHE_URLS)
+      return cache.addAll(STATIC_ASSETS)
     })
   )
   self.skipWaiting()
@@ -37,6 +34,50 @@ self.addEventListener('fetch', (event) => {
   if (request.method !== 'GET') return
 
   if (url.origin === location.origin) {
+    if (url.pathname.startsWith('/_next/static/') || 
+        url.pathname.startsWith('/icons/') ||
+        url.pathname.endsWith('.png') ||
+        url.pathname.endsWith('.svg') ||
+        url.pathname.endsWith('.ico')) {
+      event.respondWith(
+        caches.match(request).then((cachedResponse) => {
+          if (cachedResponse) return cachedResponse
+          return fetch(request).then((response) => {
+            if (response.ok) {
+              const responseClone = response.clone()
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(request, responseClone)
+              })
+            }
+            return response
+          })
+        })
+      )
+      return
+    }
+
+    if (url.pathname === '/' || url.pathname.startsWith('/?')) {
+      event.respondWith(
+        fetch(request)
+          .then((response) => {
+            if (response.ok) {
+              const responseClone = response.clone()
+              caches.open(CACHE_NAME).then((cache) => {
+                cache.put(request, responseClone)
+              })
+            }
+            return response
+          })
+          .catch(() => {
+            return caches.match(request).then((cachedResponse) => {
+              if (cachedResponse) return cachedResponse
+              return caches.match('/offline')
+            })
+          })
+      )
+      return
+    }
+
     event.respondWith(
       fetch(request)
         .then((response) => {
@@ -51,6 +92,9 @@ self.addEventListener('fetch', (event) => {
         .catch(() => {
           return caches.match(request).then((cachedResponse) => {
             if (cachedResponse) return cachedResponse
+            if (url.pathname.match(/\/[a-z]/)) {
+              return caches.match('/')
+            }
             return caches.match('/offline')
           })
         })
