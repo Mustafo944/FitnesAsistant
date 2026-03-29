@@ -3,36 +3,79 @@
 import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { signOut, onAuthChange } from '@/services/auth'
+
+const PROFILE_CACHE_KEY = 'fit2_profile_cache'
+const PROFILE_CACHE_TTL = 5 * 60 * 1000 // 5 daqiqa
+
+function getCachedProfile() {
+  try {
+    const raw = localStorage.getItem(PROFILE_CACHE_KEY)
+    if (!raw) return null
+    const { data, ts } = JSON.parse(raw)
+    if (Date.now() - ts > PROFILE_CACHE_TTL) return null
+    return data
+  } catch { return null }
+}
+
+function setCachedProfile(data) {
+  try {
+    localStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify({ data, ts: Date.now() }))
+  } catch {}
+}
 
 export default function Navbar() {
   const pathname = usePathname()
   const router = useRouter()
   const [user, setUser] = useState(null)
-  const [profile, setProfile] = useState(null)
+  const [profile, setProfile] = useState(() => {
+    // SSR-safe: only read localStorage on client
+    if (typeof window !== 'undefined') return getCachedProfile()
+    return null
+  })
+  const fetchedRef = useRef(false)
 
   useEffect(() => {
     const sub = onAuthChange((session) => {
       setUser(session?.user || null)
+      if (!session?.user) {
+        setProfile(null)
+        fetchedRef.current = false
+      }
     })
     return () => sub.unsubscribe()
   }, [])
 
-  // Profil ma'lumotlarini olish
+  // Profile fetch — only once per session, cached in localStorage
   useEffect(() => {
-    if (user) {
-      fetch('/api/profile')
-        .then(res => res.ok ? res.json() : null)
-        .then(data => { if (data) setProfile(data) })
-        .catch(() => {})
+    if (!user || fetchedRef.current) return
+
+    // Show cached immediately
+    const cached = getCachedProfile()
+    if (cached) {
+      setProfile(cached)
+      fetchedRef.current = true
+      return
     }
+
+    fetchedRef.current = true
+    fetch('/api/profile', { next: { revalidate: 300 } })
+      .then(res => res.ok ? res.json() : null)
+      .then(data => {
+        if (data) {
+          setProfile(data)
+          setCachedProfile(data)
+        }
+      })
+      .catch(() => {})
   }, [user])
 
-  // Bosh sahifada va onboarding da navbar ko'rsatmaslik
   if (pathname === '/' || pathname === '/onboarding') return null
 
   const handleSignOut = async () => {
+    localStorage.removeItem(PROFILE_CACHE_KEY)
+    localStorage.removeItem('fit2_chat_messages')
     await signOut()
     router.push('/')
   }
@@ -46,7 +89,6 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 bg-white/[0.03] backdrop-blur-[20px] border-b border-white/10 shadow-[0_4px_30px_rgba(0,0,0,0.1)]">
       <div className="max-w-5xl mx-auto px-4 h-14 flex items-center justify-between">
-        {/* Chap: Avatar + Ism */}
         <div className="flex items-center gap-3">
           {avatarUrl ? (
             <Image
@@ -65,10 +107,10 @@ export default function Navbar() {
           <span className="text-sm font-medium text-white hidden sm:block">{displayName}</span>
         </div>
 
-        {/* O'ng: Sozlamalar + Chiqish */}
         <div className="flex items-center gap-2">
           <Link
             href="/settings"
+            prefetch={false}
             className={`p-2 rounded-lg transition-colors ${
               pathname === '/settings'
                 ? 'text-violet-400 bg-violet-500/10'

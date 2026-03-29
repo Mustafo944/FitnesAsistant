@@ -59,6 +59,10 @@ export async function GET(request) {
           meals: logs.filter(l => l.date === d).length,
         })),
       },
+    }, {
+      headers: {
+        'Cache-Control': 'private, max-age=60, stale-while-revalidate=300'
+      }
     })
   } catch (error) {
     console.error('Error fetching food summary:', error)

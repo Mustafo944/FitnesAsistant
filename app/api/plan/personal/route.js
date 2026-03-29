@@ -178,10 +178,14 @@ export async function GET(request) {
       .single()
 
     if (plan && new Date(plan.created_at) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)) {
-      return Response.json({ plan: plan.plan_data })
+      return Response.json({ plan: plan.plan_data }, {
+        headers: { 'Cache-Control': 'private, max-age=60, stale-while-revalidate=300' }
+      })
     }
 
-    return Response.json({ plan: null })
+    return Response.json({ plan: null }, {
+      headers: { 'Cache-Control': 'private, max-age=10, stale-while-revalidate=60' }
+    })
   } catch (error) {
     console.error('Error fetching personal plan:', error)
     return Response.json({ plan: null })
