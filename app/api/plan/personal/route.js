@@ -1,8 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
+import { getSupabaseServerClient } from '@/lib/supabase/server'
 
 const UZBEK_FOODS = {
   breakfast: [
@@ -165,6 +161,7 @@ function generateTips(commonFoods, avgCalories) {
 }
 
 export async function GET(request) {
+  const supabase = await getSupabaseServerClient()
   try {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {
@@ -192,6 +189,7 @@ export async function GET(request) {
 }
 
 export async function POST(request) {
+  const supabase = await getSupabaseServerClient()
   try {
     const { data: { user } } = await supabase.auth.getUser()
     if (!user) {

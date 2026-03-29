@@ -1,8 +1,4 @@
-import { createClient } from '@supabase/supabase-js'
-
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-const supabase = createClient(supabaseUrl, supabaseKey)
+import { getSupabaseServerClient } from '@/lib/supabase/server'
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY
 
@@ -189,6 +185,7 @@ function generateSuggestionsRaw(foods, totalCalories) {
 }
 
 export async function POST(request) {
+  const supabase = await getSupabaseServerClient()
   try {
     const formData = await request.formData()
     const file = formData.get('file')
