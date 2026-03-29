@@ -1,4 +1,4 @@
-const CACHE_NAME = 'fit2-v4'
+const CACHE_NAME = 'fit2-v5'
 const STATIC_ASSETS = [
   '/',
   '/offline',
@@ -94,8 +94,8 @@ self.addEventListener('push', (event) => {
   const data = event.data.json()
   const options = {
     body: data.body || 'Yangi xabar',
-    icon: '/icons/icon-192x192.png',
-    badge: '/icons/icon-72x72.png',
+    icon: '/icons/icon.svg',
+    badge: '/icons/icon.svg',
     vibrate: [200, 100, 200],
     data: { url: data.url || '/' },
   }
