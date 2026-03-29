@@ -1,0 +1,21 @@
+{
+  "name": "Fit2 - Fitness AI",
+  "short_name": "Fit2",
+  "description": "AI yordamida shaxsiy fitness rejangizni oling",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#08001a",
+  "theme_color": "#8b5cf6",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["health", "fitness", "lifestyle"],
+  "prefer_related_applications": false
+}
