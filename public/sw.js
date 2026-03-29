@@ -1,15 +1,21 @@
-const CACHE_NAME = 'fit2-v5'
-const STATIC_ASSETS = [
+const CACHE_NAME = 'fit2-v6'
+const CORE_ASSETS = [
   '/',
+  '/dashboard',
+  '/food',
+  '/plan',
+  '/chat',
   '/offline',
   '/manifest.json',
-  '/icons/icon.svg',
+  '/icons/icon-192x192.png',
+  '/icons/icon-512x512.png',
 ]
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(STATIC_ASSETS)
+      console.log('Pre-caching core assets...')
+      return cache.addAll(CORE_ASSETS)
     })
   )
   self.skipWaiting()
