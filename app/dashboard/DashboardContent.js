@@ -14,8 +14,8 @@ const DietTips = dynamic(() => import('@/components/dashboard/DietTips'), { ssr:
 import { calculateBMI, getBMICategory, calculateCalories } from '@/lib/calculations'
 
 export default function DashboardContent({ initialProfile, initialLatestAnalysis }) {
-  const [profile] = useState(initialProfile)
-  const [latestAnalysis] = useState(initialLatestAnalysis)
+  const profile = initialProfile
+  const latestAnalysis = initialLatestAnalysis
   const [dateString, setDateString] = useState('')
 
   useEffect(() => {

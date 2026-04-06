@@ -202,7 +202,12 @@ export async function POST(request) {
     let analysisResult = null
 
     try {
-      const base64Image = Buffer.from(fileBuffer).toString('base64')
+      const bytes = new Uint8Array(fileBuffer)
+      let binary = ''
+      for (let i = 0; i < bytes.byteLength; i++) {
+        binary += String.fromCharCode(bytes[i])
+      }
+      const base64Image = btoa(binary)
       const mimeType = file.type || 'image/jpeg'
       const aiData = await analyzeFoodWithGemini(base64Image, mimeType)
       analysisResult = aiData

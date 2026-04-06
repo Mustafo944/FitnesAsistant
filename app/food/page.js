@@ -36,6 +36,15 @@ export default function FoodPage() {
   const [showPlanPrompt, setShowPlanPrompt] = useState(false)
   const [error, setError] = useState('')
   const inputRef = useRef(null)
+  const previewUrlRef = useRef(null)
+
+  useEffect(() => {
+    return () => {
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current)
+      }
+    }
+  }, [])
 
   const { data: logs, isLoading: logsLoading } = useQuery({
     queryKey: ['food-logs'],
@@ -98,8 +107,13 @@ export default function FoodPage() {
   const handleFileSelect = (e) => {
     const selected = e.target.files?.[0]
     if (!selected) return
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current)
+    }
+    const newUrl = URL.createObjectURL(selected)
+    previewUrlRef.current = newUrl
     setFile(selected)
-    setPreview(URL.createObjectURL(selected))
+    setPreview(newUrl)
   }
 
   const handleAnalyzeAndSave = async () => {

@@ -1,6 +1,5 @@
 'use client'
 
-import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import PageWrapper from '@/components/layout/PageWrapper'
 import Card from '@/components/ui/Card'
@@ -133,7 +132,7 @@ export default function WorkoutPage() {
               <div className="text-[9px] uppercase tracking-wider text-gray-500 mt-1">Dam olish</div>
             </Card>
             <Card glass className="p-4 text-center border border-white/5">
-              <div className="text-2xl font-black text-purple-400">7</div>
+              <div className="text-2xl font-black text-purple-400">{planData.plan?.length || 7}</div>
               <div className="text-[9px] uppercase tracking-wider text-gray-500 mt-1">Jami kun</div>
             </Card>
           </div>

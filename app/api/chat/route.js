@@ -1,8 +1,5 @@
-import { GoogleGenAI } from '@google/genai'
 import { getSupabaseServerClient } from '@/lib/supabase/server'
 import { chatWithGemini } from '@/services/ai'
-
-const genai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
 
 export async function POST(request) {
   const supabase = await getSupabaseServerClient()

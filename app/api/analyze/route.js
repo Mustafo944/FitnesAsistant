@@ -36,8 +36,13 @@ export async function POST(request) {
     const imageRes = await fetch(imageUrl)
     if (!imageRes.ok) throw new Error("Rasmni olishda xatolik")
 
-    const imageBuffer = Buffer.from(await imageRes.arrayBuffer())
-    const imageBase64 = imageBuffer.toString('base64')
+    const imageArrayBuffer = await imageRes.arrayBuffer()
+    const bytes = new Uint8Array(imageArrayBuffer)
+    let binary = ''
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i])
+    }
+    const imageBase64 = btoa(binary)
     const mimeType = imageRes.headers.get('content-type') || 'image/jpeg'
 
     // Hisoblangan qiymatlarni TOP GA olib chiqamiz (Gibrid tahlil uchun)

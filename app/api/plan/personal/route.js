@@ -180,6 +180,12 @@ export async function POST(request) {
       return Response.json({ error: 'Aloqada emas' }, { status: 401 })
     }
 
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('*')
+      .eq('id', user.id)
+      .single()
+
     if (!profile) {
       return Response.json({ error: "Profil topilmadi. Avval profilni to'ldiring." }, { status: 400 })
     }

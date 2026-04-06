@@ -16,7 +16,7 @@ export default async function DashboardPage() {
   // Profil ma'lumotlarini serverda olish (Parallel)
   const [profileRes, historyRes] = await Promise.all([
     supabase.from('profiles').select('*').eq('id', user.id).single(),
-    supabase.from('history').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(1).maybeSingle()
+    supabase.from('analyses').select('*').eq('user_id', user.id).order('created_at', { ascending: false }).limit(1).maybeSingle()
   ])
 
   if (profileRes.error && profileRes.error.code !== 'PGRST116') {

@@ -61,12 +61,6 @@ export default function Navbar() {
   useEffect(() => {
     if (!user || fetchedRef.current) return
 
-    // Show cached immediately
-    const cached = getCachedProfile()
-    if (cached && !profile) {
-      setProfile(cached)
-    }
-
     fetchedRef.current = true
     fetch('/api/profile', { next: { revalidate: 300 } })
       .then(res => res.ok ? res.json() : null)

@@ -33,11 +33,11 @@ export async function POST(request) {
   const ext = file.name.split('.').pop()
   const fileName = `${user.id}/${Date.now()}.${ext}`
 
-  const buffer = Buffer.from(await file.arrayBuffer())
+  const arrayBuffer = await file.arrayBuffer()
 
   const { error: uploadError } = await supabase.storage
     .from(STORAGE_BUCKET)
-    .upload(fileName, buffer, {
+    .upload(fileName, arrayBuffer, {
       contentType: file.type,
       upsert: false,
     })

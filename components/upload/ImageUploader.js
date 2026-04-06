@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Button from '@/components/ui/Button'
 import Card from '@/components/ui/Card'
@@ -11,11 +11,20 @@ import { validateImage } from '@/lib/validation'
 export default function ImageUploader() {
   const router = useRouter()
   const fileRef = useRef(null)
+  const previewUrlRef = useRef(null)
   const [preview, setPreview] = useState(null)
   const [file, setFile] = useState(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [step, setStep] = useState('') // upload | analyzing
+
+  useEffect(() => {
+    return () => {
+      if (previewUrlRef.current) {
+        URL.revokeObjectURL(previewUrlRef.current)
+      }
+    }
+  }, [])
 
   const handleFileChange = (e) => {
     const selected = e.target.files?.[0]
@@ -28,11 +37,20 @@ export default function ImageUploader() {
       return
     }
 
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current)
+    }
+    const newUrl = URL.createObjectURL(selected)
+    previewUrlRef.current = newUrl
     setFile(selected)
-    setPreview(URL.createObjectURL(selected))
+    setPreview(newUrl)
   }
 
   const handleRemove = () => {
+    if (previewUrlRef.current) {
+      URL.revokeObjectURL(previewUrlRef.current)
+      previewUrlRef.current = null
+    }
     setFile(null)
     setPreview(null)
     setError('')
@@ -55,7 +73,7 @@ export default function ImageUploader() {
       setStep('analyzing')
       await analyzeBody(url)
 
-      router.push('/dashboard')
+      router.push('/progress')
     } catch (err) {
       let errorMessage = err.message || "Tahlil qilishda xatolik yuz berdi"
       if (errorMessage.includes('image') || errorMessage.includes('model') || errorMessage.includes('read')) {

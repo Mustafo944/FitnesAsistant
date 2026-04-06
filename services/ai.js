@@ -58,14 +58,14 @@ ANIQ HISOB-KITOBLAR (bularni o'zgartirma, aynan shu qiymatlarni ishlat):
 - Kunlik kaloriya (ozish): ${calories.fatLoss} kcal
 
 VAZIFA:
-1. Rasmga qarab tana holatini vizual baholaYa (yog' foizi, mushak holati, tana proporsiyasi)
+1. Rasmga qarab tana holatini vizual baholang (yog' foizi, mushak holati, tana proporsiyasi)
 2. Maqsadga mos aniq mashq rejasi ber
 3. Aniq diet maslahatlari ber
 4. Hamma hisob-kitoblarni yuqoridagi qiymatlardan foydalanib yoz
 
 QOIDALAR:
 - Tibbiy tashxis qo'yma
-- Faqat JSON qaytarYa, boshqa hech narsa yozma
+- Faqat JSON qaytaring, boshqa hech narsa yozma
 - Barcha matnlar o'zbek tilida bo'lsin
 - workout_plan da kamida 4 ta mashq bo'lsin
 - diet_tips da kamida 5 ta maslahat bo'lsin
@@ -93,7 +93,7 @@ JAVOB FORMATI (faqat shu JSON, boshqa hech narsa):
   let result
   try {
     const aiResponse = await genai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       contents: [{
         role: 'user',
         parts: [
@@ -118,7 +118,7 @@ VAZIFA:
 4. Sog'lom alternativalar tavsiya qil
 
 QOIDALAR:
-- Faqat JSON qaytarYa, boshqa hech narsa yozma
+- Faqat JSON qaytaring, boshqa hech narsa yozma
 - Kaloriyalar ANIQ bo'lsin (taxminiy emas)
 - O'zbek ovqatlari uchun an'anaviy retsept asosida hisobla
 - Barcha matnlar o'zbek tilida
@@ -142,7 +142,7 @@ JAVOB FORMATI (faqat shu JSON):
   let result
   try {
     const aiResponse = await genai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       contents: [{
         role: 'user',
         parts: [
@@ -182,8 +182,8 @@ FOYDALANUVCHI MA'LUMOTLARI:
 - Kunlik kaloriya: ${targetCalories} kcal
 - Oqsil: ${protein}g, Uglevod: ${carbs}g, Yog': ${fats}g
 
-QOIDALAR:
-- Faqat JSON qaytarYa
+  QOIDALAR:
+- Faqat JSON qaytaring
 - Har kun uchun 5 ta taom aniq bo'lsin
 - Har kun uchun aniq mashq bo'lsin
 - O'zbek milliy taomlaridan foydalan
@@ -226,7 +226,7 @@ JAVOB FORMATI (faqat shu JSON):
   let result
   try {
     const aiResponse = await genai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       contents: [{
         role: 'user',
         parts: [{ text: prompt }]
@@ -270,7 +270,7 @@ QOIDALAR:
   let result
   try {
     const aiResponse = await genai.models.generateContent({
-      model: 'gemini-2.0-flash',
+      model: 'gemini-2.5-flash',
       systemInstruction: systemPrompt,
       contents: [
         ...formattedHistory,
