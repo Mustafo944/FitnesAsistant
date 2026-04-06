@@ -179,7 +179,7 @@ export async function POST(request) {
 
     let imageUrl = null
     const fileBuffer = await file.arrayBuffer()
-    const fileName = `food-${Date.now()}.jpg`
+    const fileName = `food-${crypto.randomUUID()}.jpg`
 
     try {
       const { data: uploadData, error: uploadError } = await supabase.storage

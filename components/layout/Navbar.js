@@ -70,7 +70,7 @@ export default function Navbar() {
           setCachedProfile(data)
         }
       })
-      .catch(() => {})
+      .catch(err => console.error('Profilni yuklashda xatolik:', err))
   }, [user])
 
   if (pathname === '/' || pathname === '/onboarding' || pathname === '/auth/callback') return null

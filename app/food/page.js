@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import PageWrapper from '@/components/layout/PageWrapper'
 import Card from '@/components/ui/Card'
@@ -28,6 +29,7 @@ function getDayName(dateStr) {
 }
 
 export default function FoodPage() {
+  const router = useRouter()
   const queryClient = useQueryClient()
   const [selectedMeal, setSelectedMeal] = useState(null)
   const [file, setFile] = useState(null)
@@ -292,7 +294,7 @@ export default function FoodPage() {
           {/* Show Plan Button */}
           {daysLogged >= DAYS_NEEDED && (
             <Button 
-              onClick={() => window.location.href = '/plan/diet'}
+              onClick={() => router.push('/plan/diet')}
               className="w-full mb-6 shadow-[0_0_20px_rgba(16,185,129,0.3)]"
             >
               📋 Shaxsiy dietani ko'rish

@@ -5,9 +5,9 @@ const genai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY })
 
 const ACTIVITY_LABELS = {
   passiv: 'Passiv (kam harakat)',
-  yengil: 'Yengil faollik (haftasiga 1-2 marta mashq)',
-  o_rtacha: "O'rtacha faollik (haftasiga 3-4 marta mashq)",
-  aktiv: 'Aktiv (haftasiga 5-6 marta mashq)',
+  yengil: 'Yengil (haftada 1-3 marta)',
+  o_rtacha: "O'rtacha (haftada 3-5 marta)",
+  aktiv: 'Aktiv (har kuni)',
 }
 
 const GOAL_LABELS = {
@@ -103,7 +103,10 @@ JAVOB FORMATI (faqat shu JSON, boshqa hech narsa):
       }]
     })
     result = aiResponse
-  } catch (e) { handleGeminiError(e) }
+  } catch (e) { 
+    handleGeminiError(e)
+    throw e
+  }
 
   return safeParseJSON(result.text)
 }
@@ -152,7 +155,10 @@ JAVOB FORMATI (faqat shu JSON):
       }]
     })
     result = aiResponse
-  } catch (e) { handleGeminiError(e) }
+  } catch (e) { 
+    handleGeminiError(e)
+    throw e
+  }
 
   return safeParseJSON(result.text)
 }
@@ -233,7 +239,10 @@ JAVOB FORMATI (faqat shu JSON):
       }]
     })
     result = aiResponse
-  } catch (e) { handleGeminiError(e) }
+  } catch (e) { 
+    handleGeminiError(e)
+    throw e
+  }
 
   return safeParseJSON(result.text)
 }
@@ -278,7 +287,10 @@ QOIDALAR:
       ]
     })
     result = aiResponse
-  } catch (e) { handleGeminiError(e) }
+  } catch (e) { 
+    handleGeminiError(e)
+    throw e
+  }
 
   return result.text
 }

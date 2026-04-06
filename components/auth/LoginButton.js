@@ -10,7 +10,9 @@ export default function LoginButton() {
     setLoading(true)
     try {
       await signInWithGoogle()
-    } catch {
+    } catch (err) {
+      console.error('Login xatosi:', err)
+    } finally {
       setLoading(false)
     }
   }

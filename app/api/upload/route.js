@@ -31,7 +31,7 @@ export async function POST(request) {
   }
 
   const ext = file.name.split('.').pop()
-  const fileName = `${user.id}/${Date.now()}.${ext}`
+  const fileName = `${user.id}/${crypto.randomUUID()}.${ext}`
 
   const arrayBuffer = await file.arrayBuffer()
 
